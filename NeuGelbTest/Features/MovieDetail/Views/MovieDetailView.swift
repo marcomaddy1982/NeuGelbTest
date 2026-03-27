@@ -32,6 +32,11 @@ struct MovieDetailView: View {
         .task {
             await viewModel.loadMovieDetail()
         }
+        .onAppear {
+            Task {
+                await viewModel.saveRecentlyViewed()
+            }
+        }
     }
 }
 

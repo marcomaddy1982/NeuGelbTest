@@ -13,6 +13,7 @@ struct AppRootView: View {
     enum Tab {
         case discover
         case search
+        case recentlyViewed
     }
     
     var body: some View {
@@ -28,6 +29,12 @@ struct AppRootView: View {
                     Label("Search", systemImage: "magnifyingglass")
                 }
                 .tag(Tab.search)
+            
+            RecentlyViewedView()
+                .tabItem {
+                    Label("Recently Viewed", systemImage: "clock")
+                }
+                .tag(Tab.recentlyViewed)
         }
     }
 }

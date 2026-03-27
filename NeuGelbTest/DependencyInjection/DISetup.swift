@@ -28,11 +28,19 @@ func setupDependencies() {
         let modelContainer = try PersistenceFactory.createModelContainer()
         let modelContext = ModelContext(modelContainer)
 
+        DIContainer.shared.register(modelContainer)
+        
         let movieListCache = MovieListCache(modelContext: modelContext)
         DIContainer.shared.register(movieListCache)
         
         let movieRepository = MovieRepository()
         DIContainer.shared.register(movieRepository as MovieRepositoryProtocol)
+        
+        let recentlyViewedCache = RecentlyViewedCache(modelContext: modelContext)
+        DIContainer.shared.register(recentlyViewedCache)
+        
+        let recentlyViewedRepository = RecentlyViewedRepository()
+        DIContainer.shared.register(recentlyViewedRepository as RecentlyViewedRepositoryProtocol)
     } catch {
         print("❌ Failed to setup dependencies: \(error)")
     }

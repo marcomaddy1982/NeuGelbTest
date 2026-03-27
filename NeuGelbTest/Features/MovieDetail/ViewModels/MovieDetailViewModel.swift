@@ -21,15 +21,17 @@ final class MovieDetailViewModel: ObservableObject {
     
     private let movieService: MovieServiceProtocol
     private(set) var imageService: ImageServiceProtocol
+    private let recentlyViewedRepository: RecentlyViewedRepositoryProtocol
 
     private let backdropImageSize = "w780"
     
     let movie: Movie
     
-    init(movie: Movie, movieService: MovieServiceProtocol, imageService: ImageServiceProtocol) {
+    init(movie: Movie, movieService: MovieServiceProtocol, imageService: ImageServiceProtocol, recentlyViewedRepository: RecentlyViewedRepositoryProtocol) {
         self.movie = movie
         self.movieService = movieService
         self.imageService = imageService
+        self.recentlyViewedRepository = recentlyViewedRepository
     }
     
     func loadMovieDetail() async {
@@ -46,7 +48,14 @@ final class MovieDetailViewModel: ObservableObject {
         }
     }
     
-    // MARK: - Private Helper
+    func saveRecentlyViewed() async {
+        do {
+            try await recentlyViewedRepository.saveMovie(movie)
+            print("💾 Saved movie to recently viewed: \(movie.title)")
+        } catch {
+            print("❌ Failed to save recently viewed movie: \(error.localizedDescription)")
+        }
+    }
     
     private var detail: MovieDetail? {
         if case .success(let detail) = state {
@@ -55,17 +64,13 @@ final class MovieDetailViewModel: ObservableObject {
         return nil
     }
     
-    // MARK: - Visibility Properties
-    
     var hasTagline: Bool { detail?.tagline?.isEmpty == false }
     var hasGenres: Bool { detail?.genres.isEmpty == false }
     var hasProductionCompanies: Bool { detail?.productionCompanies.isEmpty == false }
     var hasProductionCountries: Bool { detail?.productionCountries.isEmpty == false }
     var hasSpokenLanguages: Bool { detail?.spokenLanguages.isEmpty == false }
     var hasFinancialInfo: Bool { (detail?.budget ?? 0) > 0 || (detail?.revenue ?? 0) > 0 }
-    var hasBackdrop: Bool { detail?.backdropPath?.isEmpty == false }
-    
-    // MARK: - Display Strings
+    var hasBackdrop: Bool { detail?.backdropPath?.isEmpty == false     }
     
     var title: String { detail?.title ?? "Unknown" }
     
@@ -100,8 +105,6 @@ final class MovieDetailViewModel: ObservableObject {
     var revenue: String {
         (detail?.revenue ?? 0).asFormattedCurrency() ?? "N/A"
     }
-    
-    // MARK: - Display Collections
     
     var genres: [Genre] {
         detail?.genres ?? []

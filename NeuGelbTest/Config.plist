@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>SplashBackground</string>
+		<key>UIImageName</key>
+		<string>SplashLogo</string>
+	</dict>
+	<key>baseURL</key>
+	<string>$(BASE_URL)</string>
+	<key>accessToken</key>
+	<string>$(ACCESS_TOKEN)</string>
+	<key>imageBaseURL</key>
+	<string>$(IMAGE_BASE_URL)</string>
+</dict>
+</plist>

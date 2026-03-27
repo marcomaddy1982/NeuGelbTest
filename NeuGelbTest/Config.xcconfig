@@ -1,0 +1,7 @@
+// Configuration for API endpoints and authentication
+// These values are substituted into Config.plist at build time
+
+BASE_URL = https:/$()/api.themoviedb.org/3/
+ACCESS_TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4YzQxMTQ3OGNkMzhjYzEwYmYzZWM2ZWFhNDA2ZWE3YyIsIm5iZiI6MTc3NDE5Njg4NC4xNzYsInN1YiI6IjY5YzAxODk0ZTRhZDczNjMxOTAxY2M3NiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ypuDBbnW5BwUwbFKSdBUNvWe7Eerariv0PuEZIqgqdQ
+IMAGE_BASE_URL = https:/$()/image.tmdb.org/t/p/
+

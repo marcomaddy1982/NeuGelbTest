@@ -1,0 +1,23 @@
+# Xcode
+.DS_Store
+.xcodeproj/
+*.pbxproj
+*.xcworkspace/
+xcuserdata/
+DerivedData/
+*.build/
+.swiftpm/
+
+# Configuration files
+NeuGelbTest/Config.xcconfig
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+Thumbs.db

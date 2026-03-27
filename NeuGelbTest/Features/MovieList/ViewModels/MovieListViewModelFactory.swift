@@ -7,15 +7,14 @@
 
 import Foundation
 
-@MainActor
 final class MovieListViewModelFactory {
-    @Injected<MovieServiceProtocol> var movieService
+    @Injected<MovieRepositoryProtocol> var movieRepository
     @Injected<ImageServiceProtocol> var imageService
     
     static func makeMovieListViewModel() -> MovieListViewModel {
         let factory = MovieListViewModelFactory()
         return MovieListViewModel(
-            movieService: factory.movieService,
+            movieRepository: factory.movieRepository,
             imageService: factory.imageService
         )
     }

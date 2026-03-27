@@ -13,10 +13,18 @@ struct NeuGelbTestApp: App {
         // Initialize dependency injection container with all required services
         setupDependencies()
     }
-    
+
     var body: some Scene {
-        WindowGroup {
-            AppRootView()
-        }
+         WindowGroup {
+             if !isRunningTests() {
+                 AppRootView()
+             } else {
+                 EmptyView()
+             }
+         }
     }
+}
+
+private func isRunningTests() -> Bool {
+    NSClassFromString("XCTestCase") != nil
 }

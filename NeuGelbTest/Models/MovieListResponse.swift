@@ -7,7 +7,7 @@
 
 import Foundation
 
-nonisolated struct MovieListResponse: Codable, Sendable {
+nonisolated struct MovieListResponse: Codable, Sendable, Equatable {
     let page: Int
     let results: [Movie]
     let totalPages: Int

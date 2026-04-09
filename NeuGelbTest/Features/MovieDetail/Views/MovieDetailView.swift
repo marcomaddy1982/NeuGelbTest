@@ -24,7 +24,9 @@ struct MovieDetailView: View {
                 MovieDetailSuccessView(viewModel: viewModel)
                 
             case .error(let errorMessage):
-                MovieDetailErrorView(errorMessage: errorMessage, viewModel: viewModel)
+                ErrorStateView(errorMessage: errorMessage, onRetry: {
+                    await viewModel.loadMovieDetail()
+                })
             }
         }
         .navigationTitle("Movie Details")

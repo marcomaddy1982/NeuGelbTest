@@ -12,27 +12,9 @@ struct MovieDetailMetadataView: View {
     let runtime: String
     
     var body: some View {
-        HStack(spacing: 16) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Release Date")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                Text(releaseDate)
-                    .font(.body)
-            }
-            
-            Divider()
-                .frame(height: 40)
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Runtime")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                Text(runtime)
-                    .font(.body)
-            }
-            
-            Spacer()
+        VStack(spacing: 8) {
+            MetadataRowView(label: "Release Date", value: releaseDate)
+            MetadataRowView(label: "Runtime", value: runtime)
         }
     }
 }

@@ -14,29 +14,11 @@ struct MovieDetailFinancialView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Financial")
-                .font(.headline)
+                .headlineStyle()
             
-            HStack(spacing: 16) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Budget")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    Text(budget)
-                        .font(.body)
-                }
-                
-                Divider()
-                    .frame(height: 40)
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Revenue")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    Text(revenue)
-                        .font(.body)
-                }
-                
-                Spacer()
+            VStack(spacing: 8) {
+                MetadataRowView(label: "Budget", value: budget)
+                MetadataRowView(label: "Revenue", value: revenue)
             }
         }
     }

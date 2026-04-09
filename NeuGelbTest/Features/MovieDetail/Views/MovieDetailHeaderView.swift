@@ -16,13 +16,14 @@ struct MovieDetailHeaderView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
-                .font(.system(size: 24, weight: .bold))
+                .titleStyle()
+                .foregroundColor(AppColors.primary)
                 .lineLimit(3)
             
             HStack(spacing: 8) {
                 Label(voteAverage, systemImage: "star.fill")
                     .font(.headline)
-                    .foregroundColor(.orange)
+                    .foregroundColor(AppColors.accent)
                 
                 Spacer()
             }

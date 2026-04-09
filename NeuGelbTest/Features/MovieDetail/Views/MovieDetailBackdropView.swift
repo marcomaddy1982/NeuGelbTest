@@ -25,7 +25,7 @@ struct MovieDetailBackdropView: View {
                         }
                         .frame(height: 200)
                         .frame(maxWidth: .infinity)
-                        .background(Color(.systemGray5))
+                        .background(AppColors.backgroundNeutral)
                         
                     case .success(let image):
                         image
@@ -35,14 +35,7 @@ struct MovieDetailBackdropView: View {
                             .clipped()
                         
                     case .failure:
-                        VStack {
-                            Image(systemName: "film.fill")
-                                .font(.title2)
-                                .foregroundColor(.gray)
-                        }
-                        .frame(height: 200)
-                        .frame(maxWidth: .infinity)
-                        .background(Color(.systemGray5))
+                        PlaceholderImageView(height: 200, imageName: "film.fill")
                         
                     @unknown default:
                         EmptyView()

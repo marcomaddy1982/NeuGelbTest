@@ -17,18 +17,19 @@ struct MovieCardView: View {
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(viewModel.title)
-                        .font(.system(size: 15, weight: .semibold))
+                        .labelStyle()
+                        .foregroundColor(AppColors.primary)
                         .lineLimit(2)
                         .fixedSize(horizontal: false, vertical: true)
 
                     Spacer(minLength: 0)
 
                     Label(viewModel.voteAverage, systemImage: "star.fill")
-                        .font(.caption)
-                        .foregroundColor(.orange)
+                        .font(AppFonts.caption)
+                        .foregroundColor(AppColors.accent)
 
                     Text(viewModel.releaseDate)
-                        .font(.caption)
+                        .font(AppFonts.caption)
                         .foregroundColor(.secondary)
                         .lineLimit(1)
                 }
@@ -36,7 +37,7 @@ struct MovieCardView: View {
 
                 Spacer()
             }
-            .background(Color(.systemGray6))
+            .background(AppColors.backgroundLight)
             .cornerRadius(8)
             .frame(height: 245)
             .onAppear {
@@ -53,23 +54,16 @@ struct MovieCardView: View {
     private var posterImageSection: some View {
         switch viewModel.imageState {
         case .idle:
-            VStack {
-                Image(systemName: "film.fill")
-                    .font(.title2)
-                    .foregroundColor(.gray)
-            }
-            .frame(height: 140)
-            .frame(maxWidth: .infinity)
-            .background(Color(.systemGray5))
+            PlaceholderImageView(height: 140, imageName: "film.fill")
 
         case .loading:
             VStack {
                 ProgressView()
-                    .tint(.blue)
+                    .tint(AppColors.primary)
             }
             .frame(height: 140)
             .frame(maxWidth: .infinity)
-            .background(Color(.systemGray5))
+            .background(AppColors.backgroundNeutral)
             
         case .success(let image):
             image
@@ -79,14 +73,7 @@ struct MovieCardView: View {
                 .clipped()
             
         case .error:
-            VStack {
-                Image(systemName: "film.fill")
-                    .font(.title2)
-                    .foregroundColor(.gray)
-            }
-            .frame(height: 140)
-            .frame(maxWidth: .infinity)
-            .background(Color(.systemGray5))
+            PlaceholderImageView(height: 140, imageName: "film.fill")
         }
     }
 }

@@ -21,7 +21,9 @@ struct MovieListView: View {
                     MovieListSuccessView(movies: movies, viewModel: viewModel)
                     
                 case .error(let errorMessage):
-                    MovieListErrorView(errorMessage: errorMessage, viewModel: viewModel)
+                    ErrorStateView(errorMessage: errorMessage, onRetry: {
+                        await viewModel.loadMovies()
+                    })
                 }
             }
             .navigationTitle("Movies")

@@ -16,7 +16,11 @@ struct SearchView: View {
             VStack(spacing: 0) {
                 switch viewModel.state {
                 case .empty:
-                    SearchEmptyStateView()
+                    EmptyStateView(
+                        icon: "magnifyingglass",
+                        title: "No Searches Yet",
+                        message: "Start typing to search for movies"
+                    )
                 case .loading:
                     ProgressView()
                         .frame(maxHeight: .infinity)
@@ -35,7 +39,13 @@ struct SearchView: View {
                         imageService: viewModel.imageService
                     )
                 case .error(let message):
-                    SearchErrorStateView(message: message)
+                    ErrorStateView(
+                        errorMessage: message,
+                        retryButtonTitle: "Try Again",
+                        onRetry: {
+                            await viewModel.performSearch(query: viewModel.searchQuery)
+                        }
+                    )
                 }
             }
             .navigationTitle("Search Movies")

@@ -18,11 +18,20 @@ struct RecentlyViewedView: View {
             VStack(spacing: 0) {
                 switch viewModel.state {
                 case .empty:
-                    RecentlyViewedEmptyStateView()
+                    EmptyStateView(
+                        icon: "clock.fill",
+                        title: "No Recently Viewed",
+                        message: "Movies you watch will appear here"
+                    )
                 case .success:
                     RecentlyResearchedView()
                 case .error(let message):
-                    RecentlyViewedErrorStateView(message: message)
+                    ErrorStateView(
+                        errorMessage: message,
+                        onRetry: {
+                            await viewModel.loadRecentlyViewed()
+                        }
+                    )
                 }
             }
             .navigationTitle("Recently Viewed")

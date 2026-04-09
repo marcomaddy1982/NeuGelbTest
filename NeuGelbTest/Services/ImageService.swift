@@ -52,7 +52,7 @@ final class ImageService: ImageServiceProtocol, Sendable {
     private func fetchImageData(baseURL: URL, endpoint: String) async -> Data? {
         do {
             let request = ImageRequest(baseURL: baseURL, endpoint: endpoint)
-            return try await networkClient.fetchBinary(request)
+            return try await networkClient.fetch(request)
         } catch {
             print("❌ Image fetch failed: \(error.localizedDescription)")
             return nil

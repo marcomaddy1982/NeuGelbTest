@@ -54,7 +54,7 @@ final class SearchViewModel: ObservableObject {
     }
 
     func loadNextPage() {
-        guard !isPaginationLoading, hasMorePages, currentPage < 1000 else { return }
+        guard !isPaginationLoading, hasMorePages else { return }
         
         isPaginationLoading = true
         let nextPage = currentPage + 1

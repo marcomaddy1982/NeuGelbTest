@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftData
 
 func setupDependencies() {
     do {
@@ -23,6 +24,23 @@ func setupDependencies() {
         
         let imageService = ImageService(networkClient: networkClient, imageBaseURL: config.imageBaseURL, cache: ImageCache.shared)
         DIContainer.shared.register(imageService as ImageServiceProtocol)
+
+        let modelContainer = try PersistenceFactory.createModelContainer()
+        let modelContext = ModelContext(modelContainer)
+
+        DIContainer.shared.register(modelContainer)
+        
+        let movieListCache = MovieListCache(modelContext: modelContext)
+        DIContainer.shared.register(movieListCache)
+        
+        let movieRepository = MovieRepository()
+        DIContainer.shared.register(movieRepository as MovieRepositoryProtocol)
+        
+        let recentlyViewedCache = RecentlyViewedCache(modelContext: modelContext)
+        DIContainer.shared.register(recentlyViewedCache)
+        
+        let recentlyViewedRepository = RecentlyViewedRepository()
+        DIContainer.shared.register(recentlyViewedRepository as RecentlyViewedRepositoryProtocol)
     } catch {
         print("❌ Failed to setup dependencies: \(error)")
     }

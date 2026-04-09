@@ -13,14 +13,13 @@ import Foundation
 @MainActor
 struct MovieDetailViewModelTests {
     
-    // MARK: - Initial State Tests
-    
     @Test("Initial state is loading")
     func testInitialState() {
         let testMovie = TestDataBuilder.makeSampleMovie(title: "Test Movie")
         let mockMovieService = MockMovieService()
         let mockImageService = MockImageService()
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService)
+        let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
         
         if case .loading = sut.state {
             #expect(true)
@@ -43,8 +42,9 @@ struct MovieDetailViewModelTests {
         let mockMovieService = MockMovieService()
         mockMovieService.simulateDetailSuccess(with: mockMovieDetail)
         let mockImageService = MockImageService()
+        let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
         
         await sut.loadMovieDetail()
         
@@ -64,8 +64,9 @@ struct MovieDetailViewModelTests {
         let mockMovieService = MockMovieService()
         mockMovieService.simulateDetailSuccess(with: mockMovieDetail)
         let mockImageService = MockImageService()
+        let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
         await sut.loadMovieDetail()
         
         #expect(sut.title == "The Shawshank Redemption")
@@ -79,8 +80,9 @@ struct MovieDetailViewModelTests {
         let mockMovieService = MockMovieService()
         mockMovieService.simulateDetailSuccess(with: mockMovieDetail)
         let mockImageService = MockImageService()
+        let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
         await sut.loadMovieDetail()
         
         #expect(sut.voteAverageFormatted == "8.6")
@@ -94,8 +96,9 @@ struct MovieDetailViewModelTests {
         let mockMovieService = MockMovieService()
         mockMovieService.simulateDetailSuccess(with: mockMovieDetail)
         let mockImageService = MockImageService()
+        let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
         await sut.loadMovieDetail()
         
         #expect(!sut.releaseDate.isEmpty)
@@ -110,8 +113,9 @@ struct MovieDetailViewModelTests {
         let mockMovieService = MockMovieService()
         mockMovieService.simulateDetailSuccess(with: mockMovieDetail)
         let mockImageService = MockImageService()
+        let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
         await sut.loadMovieDetail()
         
         #expect(!sut.runtime.isEmpty)
@@ -125,8 +129,9 @@ struct MovieDetailViewModelTests {
         let mockMovieService = MockMovieService()
         mockMovieService.simulateDetailSuccess(with: mockMovieDetail)
         let mockImageService = MockImageService()
+        let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
         await sut.loadMovieDetail()
         
         #expect(sut.overview == "A detailed overview")
@@ -140,8 +145,9 @@ struct MovieDetailViewModelTests {
         let mockMovieService = MockMovieService()
         mockMovieService.simulateDetailSuccess(with: mockMovieDetail)
         let mockImageService = MockImageService()
+        let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
         await sut.loadMovieDetail()
         
         #expect(sut.overview == "No overview available")
@@ -155,8 +161,9 @@ struct MovieDetailViewModelTests {
         let mockMovieService = MockMovieService()
         mockMovieService.simulateDetailSuccess(with: mockMovieDetail)
         let mockImageService = MockImageService()
+        let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
         await sut.loadMovieDetail()
         
         #expect(sut.tagline == "A good tagline")
@@ -170,8 +177,9 @@ struct MovieDetailViewModelTests {
         let mockMovieService = MockMovieService()
         mockMovieService.simulateDetailSuccess(with: mockMovieDetail)
         let mockImageService = MockImageService()
+        let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
         await sut.loadMovieDetail()
         
         #expect(sut.backdropImageURL != nil)
@@ -185,8 +193,9 @@ struct MovieDetailViewModelTests {
         let mockMovieService = MockMovieService()
         mockMovieService.simulateDetailSuccess(with: mockMovieDetail)
         let mockImageService = MockImageService()
+        let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
         await sut.loadMovieDetail()
         
         #expect(sut.backdropImageURL == nil)
@@ -200,8 +209,9 @@ struct MovieDetailViewModelTests {
         let mockMovieService = MockMovieService()
         mockMovieService.simulateDetailSuccess(with: mockMovieDetail)
         let mockImageService = MockImageService()
+        let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
         await sut.loadMovieDetail()
         
         #expect(sut.hasBackdrop == true)
@@ -215,8 +225,9 @@ struct MovieDetailViewModelTests {
         let mockMovieService = MockMovieService()
         mockMovieService.simulateDetailSuccess(with: mockMovieDetail)
         let mockImageService = MockImageService()
+        let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
         await sut.loadMovieDetail()
         
         #expect(sut.hasTagline == true)
@@ -231,8 +242,9 @@ struct MovieDetailViewModelTests {
         let mockMovieService = MockMovieService()
         mockMovieService.simulateDetailSuccess(with: mockMovieDetail)
         let mockImageService = MockImageService()
+        let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
         await sut.loadMovieDetail()
         
         #expect(sut.hasGenres == true)
@@ -247,8 +259,9 @@ struct MovieDetailViewModelTests {
         let mockMovieService = MockMovieService()
         mockMovieService.simulateDetailSuccess(with: mockMovieDetail)
         let mockImageService = MockImageService()
+        let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
         await sut.loadMovieDetail()
         
         #expect(sut.hasFinancialInfo == true)
@@ -263,8 +276,9 @@ struct MovieDetailViewModelTests {
         let mockMovieService = MockMovieService()
         mockMovieService.simulateDetailSuccess(with: mockMovieDetail)
         let mockImageService = MockImageService()
+        let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
         await sut.loadMovieDetail()
         
         #expect(sut.hasProductionCompanies == true)
@@ -279,8 +293,9 @@ struct MovieDetailViewModelTests {
         let mockMovieService = MockMovieService()
         mockMovieService.simulateDetailSuccess(with: mockMovieDetail)
         let mockImageService = MockImageService()
+        let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
         await sut.loadMovieDetail()
         
         #expect(sut.hasProductionCountries == true)
@@ -295,8 +310,9 @@ struct MovieDetailViewModelTests {
         let mockMovieService = MockMovieService()
         mockMovieService.simulateDetailSuccess(with: mockMovieDetail)
         let mockImageService = MockImageService()
+        let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
         await sut.loadMovieDetail()
         
         #expect(sut.hasSpokenLanguages == true)
@@ -310,8 +326,9 @@ struct MovieDetailViewModelTests {
         let mockMovieService = MockMovieService()
         mockMovieService.simulateDetailFailure(with: NetworkError.noData)
         let mockImageService = MockImageService()
+        let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
         
         await sut.loadMovieDetail()
         
@@ -330,8 +347,9 @@ struct MovieDetailViewModelTests {
         let mockMovieService = MockMovieService()
         mockMovieService.simulateDetailSuccess(with: mockMovieDetail)
         let mockImageService = MockImageService()
+        let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
         await sut.loadMovieDetail()
         
         #expect(mockMovieService.lastMovieIdRequested == 12345)

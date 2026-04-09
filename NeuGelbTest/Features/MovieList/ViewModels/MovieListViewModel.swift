@@ -21,20 +21,20 @@ final class MovieListViewModel: ObservableObject {
     @Published var isPaginationLoading: Bool = false
     @Published var currentPage: Int = 1
     @Published var hasMorePages: Bool = true
-    
-    private let movieService: MovieServiceProtocol
+
+    private let movieRepository: MovieRepositoryProtocol
     private let imageService: ImageServiceProtocol
-    
-    init(movieService: MovieServiceProtocol, imageService: ImageServiceProtocol) {
-        self.movieService = movieService
+
+    init(movieRepository: MovieRepositoryProtocol, imageService: ImageServiceProtocol) {
+        self.movieRepository = movieRepository
         self.imageService = imageService
     }
     
-    func loadMovies() async {
+    func loadMovies(forceRefresh: Bool = false) async {
         state = .loading
         
         do {
-            let response = try await movieService.fetchMovies(page: 1)
+            let response = try await movieRepository.getMovies(page: 1, forceRefresh: forceRefresh)
             self.state = .success(response.results)
             self.currentPage = response.page
             self.hasMorePages = response.page < response.totalPages
@@ -46,7 +46,7 @@ final class MovieListViewModel: ObservableObject {
         }
     }
     
-    func loadNextPage() async {
+    func loadNextPage(forceRefresh: Bool = false) async {
         guard hasMorePages && !isPaginationLoading else { return }
         guard case .success(var movies) = state else { return }
         
@@ -54,7 +54,7 @@ final class MovieListViewModel: ObservableObject {
         let nextPage = currentPage + 1
         
         do {
-            let response = try await movieService.fetchMovies(page: nextPage)
+            let response = try await movieRepository.getMovies(page: nextPage, forceRefresh: forceRefresh)
             movies.append(contentsOf: response.results)
             self.state = .success(movies)
             self.currentPage = response.page

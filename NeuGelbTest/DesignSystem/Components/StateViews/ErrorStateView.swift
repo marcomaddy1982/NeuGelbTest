@@ -3,12 +3,12 @@ import SwiftUI
 struct ErrorStateView<Content: View>: View {
     let errorMessage: String
     let onRetry: () async -> Void
-    let retryButtonTitle: String
+    let retryButtonTitle: LocalizedStringKey
     @ViewBuilder let additionalContent: () -> Content
     
     init(
         errorMessage: String,
-        retryButtonTitle: String = "Try Again",
+        retryButtonTitle: LocalizedStringKey = "common.error.retry",
         onRetry: @escaping () async -> Void,
         @ViewBuilder additionalContent: @escaping () -> Content = { EmptyView() }
     ) {
@@ -24,7 +24,7 @@ struct ErrorStateView<Content: View>: View {
                 .largeIconStyle()
                 .foregroundColor(AppColors.errorRed)
             
-            Text("Error")
+            Text("common.error.title")
                 .titleStyle()
             
             Text(errorMessage)

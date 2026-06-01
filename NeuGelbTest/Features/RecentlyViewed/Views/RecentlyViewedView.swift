@@ -20,8 +20,8 @@ struct RecentlyViewedView: View {
                 case .empty:
                     EmptyStateView(
                         icon: "clock.fill",
-                        title: "No Recently Viewed",
-                        message: "Movies you watch will appear here"
+                        title: "recentlyViewed.empty.title",
+                        message: "recentlyViewed.empty.subtitle"
                     )
                 case .success:
                     RecentlyResearchedView()
@@ -34,7 +34,7 @@ struct RecentlyViewedView: View {
                     )
                 }
             }
-            .navigationTitle("Recently Viewed")
+            .navigationTitle("recentlyViewed.navigationTitle")
         }
         .modelContext(ModelContext(modelContainer))
         .task {

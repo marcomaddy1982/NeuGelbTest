@@ -13,12 +13,12 @@ struct MovieDetailFinancialView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Financial")
+            Text("movieDetail.financial")
                 .headlineStyle()
             
             VStack(spacing: 8) {
-                MetadataRowView(label: "Budget", value: budget)
-                MetadataRowView(label: "Revenue", value: revenue)
+                MetadataRowView(label: "movieDetail.budget", value: budget)
+                MetadataRowView(label: "movieDetail.revenue", value: revenue)
             }
         }
     }

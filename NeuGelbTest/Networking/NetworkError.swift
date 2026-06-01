@@ -19,19 +19,19 @@ enum NetworkError: LocalizedError, Sendable {
     var errorDescription: String? {
         switch self {
         case .invalidURL:
-            return "Invalid URL provided"
+            return String(localized: "error.invalidURL")
         case .noData:
-            return "No data received from the server"
+            return String(localized: "error.noData")
         case .decodingError(let message):
-            return "Failed to decode response: \(message)"
+            return String(localized: "error.decodingError \(message)")
         case .httpError(let statusCode):
-            return "HTTP Error: \(statusCode)"
+            return String(localized: "error.httpError \(statusCode)")
         case .requestCancelled:
-            return "Request was cancelled"
+            return String(localized: "error.requestCancelled")
         case .configError(let message):
-            return "Configuration Error: \(message)"
+            return String(localized: "error.configError \(message)")
         case .unknown(let error):
-            return "Unknown error: \(error.localizedDescription)"
+            return String(localized: "error.unknown \(error.localizedDescription)")
         }
     }
 }

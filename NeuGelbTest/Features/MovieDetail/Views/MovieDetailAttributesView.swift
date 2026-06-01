@@ -21,7 +21,7 @@ struct MovieDetailAttributesView: View {
         // Genres
         if hasGenres {
             VStack(alignment: .leading, spacing: 8) {
-                Text("Genres")
+                Text("movieDetail.genres")
                     .headlineStyle()
                 
                 VStack(alignment: .leading, spacing: 6) {
@@ -38,7 +38,7 @@ struct MovieDetailAttributesView: View {
         // Production Companies
         if hasProductionCompanies {
             VStack(alignment: .leading, spacing: 8) {
-                Text("Production Companies")
+                Text("movieDetail.productionCompanies")
                     .headlineStyle()
                 
                 VStack(alignment: .leading, spacing: 8) {
@@ -54,7 +54,7 @@ struct MovieDetailAttributesView: View {
         // Production Countries
         if hasProductionCountries {
             VStack(alignment: .leading, spacing: 8) {
-                Text("Countries")
+                Text("movieDetail.countries")
                     .headlineStyle()
                 
                 VStack(alignment: .leading, spacing: 6) {
@@ -71,7 +71,7 @@ struct MovieDetailAttributesView: View {
         // Spoken Languages
         if hasSpokenLanguages {
             VStack(alignment: .leading, spacing: 8) {
-                Text("Languages")
+                Text("movieDetail.languages")
                     .headlineStyle()
                 
                 VStack(alignment: .leading, spacing: 6) {

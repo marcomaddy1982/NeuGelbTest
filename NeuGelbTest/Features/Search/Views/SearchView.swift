@@ -18,8 +18,8 @@ struct SearchView: View {
                 case .empty:
                     EmptyStateView(
                         icon: "magnifyingglass",
-                        title: "No Searches Yet",
-                        message: "Start typing to search for movies"
+                        title: "search.empty.title",
+                        message: "search.empty.subtitle"
                     )
                 case .loading:
                     ProgressView()
@@ -41,17 +41,16 @@ struct SearchView: View {
                 case .error(let message):
                     ErrorStateView(
                         errorMessage: message,
-                        retryButtonTitle: "Try Again",
                         onRetry: {
-                            await viewModel.performSearch(query: viewModel.searchQuery)
+                            viewModel.performSearch(query: viewModel.searchQuery)
                         }
                     )
                 }
             }
-            .navigationTitle("Search Movies")
+            .navigationTitle("search.navigationTitle")
             .searchable(
                 text: $viewModel.searchQuery,
-                prompt: "Search movies..."
+                prompt: Text("search.placeholder")
             )
             .navigationDestination(isPresented: .constant(viewModel.selectedMovieId != nil)) {
                 if let movieId = viewModel.selectedMovieId,

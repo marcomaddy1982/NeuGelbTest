@@ -72,24 +72,24 @@ final class MovieDetailViewModel: ObservableObject {
     var hasFinancialInfo: Bool { (detail?.budget ?? 0) > 0 || (detail?.revenue ?? 0) > 0 }
     var hasBackdrop: Bool { detail?.backdropPath?.isEmpty == false     }
     
-    var title: String { detail?.title ?? "Unknown" }
+    var title: String { detail?.title ?? String(localized: "common.unknown") }
     
     var voteAverageFormatted: String {
-        guard let avg = detail?.voteAverage else { return "N/A" }
+        guard let avg = detail?.voteAverage else { return String(localized: "common.notAvailable") }
         return String(format: "%.1f", avg)
     }
     
     var releaseDate: String {
-        (detail?.releaseDate?.asFormattedReleaseDate()) ?? "N/A"
+        (detail?.releaseDate?.asFormattedReleaseDate()) ?? String(localized: "common.notAvailable")
     }
     
     var runtime: String {
-        detail?.runtime?.asFormattedRuntime() ?? "N/A"
+        detail?.runtime?.asFormattedRuntime() ?? String(localized: "common.notAvailable")
     }
     
     var overview: String {
         guard let overview = detail?.overview, !overview.isEmpty else {
-            return "No overview available"
+            return String(localized: "common.noOverview")
         }
         return overview
     }
@@ -99,11 +99,11 @@ final class MovieDetailViewModel: ObservableObject {
     }
     
     var budget: String {
-        (detail?.budget ?? 0).asFormattedCurrency() ?? "N/A"
+        (detail?.budget ?? 0).asFormattedCurrency() ?? String(localized: "common.notAvailable")
     }
     
     var revenue: String {
-        (detail?.revenue ?? 0).asFormattedCurrency() ?? "N/A"
+        (detail?.revenue ?? 0).asFormattedCurrency() ?? String(localized: "common.notAvailable")
     }
     
     var genres: [Genre] {

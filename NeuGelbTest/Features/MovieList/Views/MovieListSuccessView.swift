@@ -30,7 +30,7 @@ struct MovieListSuccessView: View {
                 if viewModel.isPaginationLoading {
                     VStack(spacing: 12) {
                         ProgressView()
-                        Text("Loading more movies...")
+                        Text("movieList.loadingMore")
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }

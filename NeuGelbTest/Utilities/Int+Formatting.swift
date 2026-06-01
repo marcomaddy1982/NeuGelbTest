@@ -13,7 +13,9 @@ extension Int {
         guard self > 0 else { return nil }
         let hours = self / 60
         let minutes = self % 60
-        return hours > 0 ? "\(hours)h \(minutes)m" : "\(minutes)m"
+        return hours > 0
+            ? String(localized: "common.runtime.hoursMinutes \(hours) \(minutes)")
+            : String(localized: "common.runtime.minutesOnly \(minutes)")
     }
     
     /// Formats integer as USD currency (e.g., "$100,000,000")

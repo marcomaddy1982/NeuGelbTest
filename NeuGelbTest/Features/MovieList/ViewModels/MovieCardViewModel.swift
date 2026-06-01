@@ -27,9 +27,9 @@ final class MovieCardViewModel: ObservableObject {
     var title: String { movie.title }
     var releaseDate: String {
         guard let dateString = movie.releaseDate, !dateString.isEmpty else {
-            return "To Be Announced"
+            return String(localized: "common.toBeAnnounced")
         }
-        return dateString.toMonthDayYearString() ?? "To Be Announced"
+        return dateString.toMonthDayYearString() ?? String(localized: "common.toBeAnnounced")
     }
     var voteAverage: String { String(format: "%.1f", movie.voteAverage) }
     var posterPath: String? { movie.posterPath }
@@ -58,7 +58,7 @@ final class MovieCardViewModel: ObservableObject {
                 }
             } else {
                 if !Task.isCancelled {
-                    imageState = .error("Failed to load poster")
+                    imageState = .error(String(localized: "common.failedToLoadPoster"))
                 }
             }
         }

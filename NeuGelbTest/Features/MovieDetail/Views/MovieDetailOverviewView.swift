@@ -12,7 +12,7 @@ struct MovieDetailOverviewView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Overview")
+            Text("movieDetail.overview")
                 .font(.headline)
             
             Text(overview)

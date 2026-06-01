@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct PrimaryActionButton: View {
-    let title: String
+    let title: LocalizedStringKey
     let action: () -> Void
     
     var body: some View {

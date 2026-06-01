@@ -20,19 +20,19 @@ struct AppRootView: View {
         TabView(selection: $selectedTab) {
             MovieListView()
                 .tabItem {
-                    Label("Discover", systemImage: "list.bullet")
+                    Label("tab.discover", systemImage: "list.bullet")
                 }
                 .tag(Tab.discover)
             
             SearchView()
                 .tabItem {
-                    Label("Search", systemImage: "magnifyingglass")
+                    Label("tab.search", systemImage: "magnifyingglass")
                 }
                 .tag(Tab.search)
             
             RecentlyViewedView()
                 .tabItem {
-                    Label("Recently Viewed", systemImage: "clock")
+                    Label("tab.recentlyViewed", systemImage: "clock")
                 }
                 .tag(Tab.recentlyViewed)
         }

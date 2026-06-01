@@ -26,7 +26,7 @@ struct MovieListView: View {
                     })
                 }
             }
-            .navigationTitle("Movies")
+            .navigationTitle("movieList.navigationTitle")
             .task(id: viewModel.state) {
                 // Only load movies if we're in the loading state (initial load)
                 if case .loading = viewModel.state {

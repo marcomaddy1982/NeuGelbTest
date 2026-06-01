@@ -29,7 +29,7 @@ struct MovieDetailView: View {
                 })
             }
         }
-        .navigationTitle("Movie Details")
+        .navigationTitle("movieDetail.navigationTitle")
         .navigationBarTitleDisplayMode(.inline)
         .task {
             await viewModel.loadMovieDetail()

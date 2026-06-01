@@ -13,8 +13,8 @@ struct MovieDetailMetadataView: View {
     
     var body: some View {
         VStack(spacing: 8) {
-            MetadataRowView(label: "Release Date", value: releaseDate)
-            MetadataRowView(label: "Runtime", value: runtime)
+            MetadataRowView(label: "movieDetail.releaseDate", value: releaseDate)
+            MetadataRowView(label: "movieDetail.runtime", value: runtime)
         }
     }
 }

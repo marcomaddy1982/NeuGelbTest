@@ -9,6 +9,8 @@ import SwiftUI
 
 @main
 struct NeuGelbTestApp: App {
+    @AppStorage("appearanceMode") private var appearanceMode: AppearanceMode = .system
+
     init() {
         // Initialize dependency injection container with all required services
         setupDependencies()
@@ -18,6 +20,7 @@ struct NeuGelbTestApp: App {
          WindowGroup {
              if !isRunningTests() {
                  AppRootView()
+                     .preferredColorScheme(appearanceMode.colorScheme)
              } else {
                  EmptyView()
              }

@@ -17,7 +17,7 @@ final class ImageService: ImageServiceProtocol, Sendable {
     private let imageBaseURL: URL
     private let cache: any ImageCaching
     
-    init(networkClient: NetworkClient, imageBaseURL: URL, cache: any ImageCaching = ImageCache.shared) {
+    init(networkClient: NetworkClient, imageBaseURL: URL, cache: any ImageCaching) {
         self.networkClient = networkClient
         self.imageBaseURL = imageBaseURL
         self.cache = cache

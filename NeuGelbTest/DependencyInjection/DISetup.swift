@@ -22,7 +22,10 @@ func setupDependencies() {
         let searchService = SearchService()
         DIContainer.shared.register(searchService as SearchServiceProtocol)
         
-        let imageService = ImageService(networkClient: networkClient, imageBaseURL: config.imageBaseURL, cache: ImageCache.shared)
+        let imageCache = ImageCache()
+        DIContainer.shared.register(imageCache as ImageCaching)
+
+        let imageService = ImageService(networkClient: networkClient, imageBaseURL: config.imageBaseURL, cache: imageCache)
         DIContainer.shared.register(imageService as ImageServiceProtocol)
 
         let modelContainer = try PersistenceFactory.createModelContainer()

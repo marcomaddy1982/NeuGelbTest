@@ -91,18 +91,17 @@ struct MovieCardView: View {
         overview: "Two imprisoned men bond over a number of years.",
         releaseDate: "1994-09-23"
     )
-    
-    do {
-        let config = try NetworkConfig()
+
+    if let config = try? NetworkConfig() {
         let networkClient = NetworkClient(config: config)
-        let imageService = ImageService(networkClient: networkClient, imageBaseURL: config.imageBaseURL)
+        let imageService = ImageService(networkClient: networkClient, imageBaseURL: config.imageBaseURL, cache: ImageCache())
         let viewModel = MovieCardViewModel(movie: movie, imageService: imageService)
-        
-        return NavigationStack {
+
+        NavigationStack {
             MovieCardView(viewModel: viewModel)
                 .padding()
         }
-    } catch {
-        return AnyView(Text("Preview error"))
+    } else {
+        Text("Preview error")
     }
 }

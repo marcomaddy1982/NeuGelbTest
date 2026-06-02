@@ -53,12 +53,11 @@ struct SearchResultsGridView: View {
 }
 
 #Preview {
-    do {
-        let config = try NetworkConfig()
+    if let config = try? NetworkConfig() {
         let networkClient = NetworkClient(config: config)
-        let imageService = ImageService(networkClient: networkClient, imageBaseURL: config.imageBaseURL)
-        
-        return SearchResultsGridView(
+        let imageService = ImageService(networkClient: networkClient, imageBaseURL: config.imageBaseURL, cache: ImageCache())
+
+        SearchResultsGridView(
             searchResults: [
                 Movie(
                     tmdbId: 550,
@@ -102,7 +101,7 @@ struct SearchResultsGridView: View {
             },
             imageService: imageService
         )
-    } catch {
-        return AnyView(Text("Preview error"))
+    } else {
+        Text("Preview error")
     }
 }

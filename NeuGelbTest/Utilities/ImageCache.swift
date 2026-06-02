@@ -14,8 +14,6 @@ protocol ImageCaching {
 }
 
 actor ImageCache: ImageCaching {
-    static let shared = ImageCache()
-    
     private var cache: [URL: Image] = [:]
     
     func getCachedImage(_ url: URL) -> Image? {

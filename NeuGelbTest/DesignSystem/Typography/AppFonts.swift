@@ -2,17 +2,17 @@ import SwiftUI
 
 struct AppFonts {
     // Heading styles
-    static let title = Font.system(size: 24, weight: .bold)
-    static let subtitle = Font.system(size: 18, weight: .semibold)
-    static let headline = Font.system(size: 16, weight: .semibold)
-    
+    static let title    = Font.system(.title, design: .default).weight(.bold)
+    static let subtitle = Font.system(.title2, design: .default).weight(.semibold)
+    static let headline = Font.system(.headline, design: .default)
+
     // Body styles
-    static let body = Font.system(size: 16, weight: .regular)
-    static let label = Font.system(size: 14, weight: .semibold)
-    static let caption = Font.system(size: 12, weight: .regular)
-    
-    // Special sizes
-    static let largeIcon = Font.system(size: 48, weight: .regular)
-    static let mediumIcon = Font.system(size: 36, weight: .regular)
-    static let smallIcon = Font.system(size: 24, weight: .regular)
+    static let body    = Font.system(.body, design: .default)
+    static let label   = Font.system(.subheadline, design: .default).weight(.semibold)
+    static let caption = Font.system(.caption, design: .default)
+
+    // Icon styles — preserve exact sizes at default, scale proportionally
+    static let largeIcon  = Font.custom("", size: 48, relativeTo: .largeTitle)
+    static let mediumIcon = Font.custom("", size: 36, relativeTo: .title)
+    static let smallIcon  = Font.custom("", size: 24, relativeTo: .title2)
 }

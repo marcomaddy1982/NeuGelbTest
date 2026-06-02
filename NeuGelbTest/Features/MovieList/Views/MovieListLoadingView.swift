@@ -13,7 +13,7 @@ struct MovieListLoadingView: View {
             ProgressView()
                 .scaleEffect(1.5)
             Text("movieList.loading")
-                .font(.headline)
+                .headlineStyle()
                 .foregroundColor(.secondary)
         }
     }

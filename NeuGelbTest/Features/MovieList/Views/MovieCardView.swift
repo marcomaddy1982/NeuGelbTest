@@ -9,12 +9,15 @@ import SwiftUI
 
 struct MovieCardView: View {
     @StateObject var viewModel: MovieCardViewModel
-    
+
+    @ScaledMetric(relativeTo: .title) private var cardHeight: CGFloat = 245
+    @ScaledMetric(relativeTo: .title) private var posterHeight: CGFloat = 140
+
     var body: some View {
         NavigationLink(destination: MovieDetailView(movie: viewModel.movie)) {
             VStack(alignment: .leading, spacing: 0) {
                 posterImageSection
-                
+
                 VStack(alignment: .leading, spacing: 4) {
                     Text(viewModel.title)
                         .labelStyle()
@@ -39,7 +42,8 @@ struct MovieCardView: View {
             }
             .background(AppColors.backgroundLight)
             .cornerRadius(8)
-            .frame(height: 245)
+            .frame(height: cardHeight)
+            .clipped()
             .onAppear {
                 viewModel.loadImage()
             }
@@ -49,31 +53,31 @@ struct MovieCardView: View {
         }
         .buttonStyle(PlainButtonStyle())
     }
-    
+
     @ViewBuilder
     private var posterImageSection: some View {
         switch viewModel.imageState {
         case .idle:
-            PlaceholderImageView(height: 140, imageName: "film.fill")
+            PlaceholderImageView(size: .small, imageName: "film.fill")
 
         case .loading:
             VStack {
                 ProgressView()
                     .tint(AppColors.primary)
             }
-            .frame(height: 140)
+            .frame(height: posterHeight)
             .frame(maxWidth: .infinity)
             .background(AppColors.backgroundNeutral)
-            
+
         case .success(let image):
             image
                 .resizable()
                 .scaledToFill()
-                .frame(height: 140)
+                .frame(height: posterHeight)
                 .clipped()
-            
+
         case .error:
-            PlaceholderImageView(height: 140, imageName: "film.fill")
+            PlaceholderImageView(size: .small, imageName: "film.fill")
         }
     }
 }

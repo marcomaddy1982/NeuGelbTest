@@ -13,10 +13,10 @@ struct MovieDetailOverviewView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("movieDetail.overview")
-                .font(.headline)
+                .headlineStyle()
             
             Text(overview)
-                .font(.body)
+                .bodyStyle()
                 .lineLimit(nil)
                 .foregroundColor(.secondary)
         }

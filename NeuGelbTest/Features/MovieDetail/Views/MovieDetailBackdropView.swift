@@ -35,7 +35,7 @@ struct MovieDetailBackdropView: View {
                             .clipped()
                         
                     case .failure:
-                        PlaceholderImageView(height: 200, imageName: "film.fill")
+                        PlaceholderImageView(size: .large, imageName: "film.fill")
                         
                     @unknown default:
                         EmptyView()

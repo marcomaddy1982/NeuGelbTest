@@ -13,14 +13,24 @@ struct SearchResultsGridView: View {
     let shouldLoadNextPage: (Movie) -> Bool
     let onNextPageLoad: () -> Void
     let imageService: any ImageServiceProtocol
-    
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @ScaledMetric(relativeTo: .body) private var gridSpacing: CGFloat = 16
+    @ScaledMetric(relativeTo: .body) private var gridPadding: CGFloat = 16
+
+    private var columns: [GridItem] {
+        dynamicTypeSize >= .accessibility1
+            ? [GridItem(.flexible())]
+            : [GridItem(.flexible()), GridItem(.flexible())]
+    }
+
     var body: some View {
         ScrollViewReader { scrollProxy in
             ScrollView {
-                VStack(spacing: 16) {
+                VStack(spacing: gridSpacing) {
                     LazyVGrid(
-                        columns: [GridItem(.flexible()), GridItem(.flexible())],
-                        spacing: 16
+                        columns: columns,
+                        spacing: gridSpacing
                     ) {
                         ForEach(searchResults, id: \.id) { movie in
                             Button(action: {
@@ -36,7 +46,7 @@ struct SearchResultsGridView: View {
                         }
                     }
                 }
-                .padding(16)
+                .padding(gridPadding)
             }
         }
     }

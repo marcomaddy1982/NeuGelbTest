@@ -22,7 +22,7 @@ struct MovieDetailHeaderView: View {
             
             HStack(spacing: 8) {
                 Label(voteAverage, systemImage: "star.fill")
-                    .font(.headline)
+                    .font(AppFonts.headline)
                     .foregroundColor(AppColors.accent)
                 
                 Spacer()
@@ -31,7 +31,7 @@ struct MovieDetailHeaderView: View {
         
         if hasTagline, let tagline {
             Text(tagline)
-                .font(.system(.body, design: .default))
+                .bodyStyle()
                 .italic()
                 .foregroundColor(.secondary)
         }

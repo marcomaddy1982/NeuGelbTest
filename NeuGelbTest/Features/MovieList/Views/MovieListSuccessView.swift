@@ -10,12 +10,20 @@ import SwiftUI
 struct MovieListSuccessView: View {
     let movies: [Movie]
     let viewModel: MovieListViewModel
-    
-    private let gridColumns = [GridItem(.flexible()), GridItem(.flexible())]
-    
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @ScaledMetric(relativeTo: .body) private var gridSpacing: CGFloat = 16
+    @ScaledMetric(relativeTo: .body) private var gridPadding: CGFloat = 16
+
+    private var columns: [GridItem] {
+        dynamicTypeSize >= .accessibility1
+            ? [GridItem(.flexible())]
+            : [GridItem(.flexible()), GridItem(.flexible())]
+    }
+
     var body: some View {
         ScrollView {
-            LazyVGrid(columns: gridColumns, spacing: 16) {
+            LazyVGrid(columns: columns, spacing: gridSpacing) {
                 ForEach(movies, id: \.id) { movie in
                     MovieCardView(viewModel: viewModel.makeCardViewModel(for: movie))
                         .onAppear {
@@ -26,12 +34,12 @@ struct MovieListSuccessView: View {
                             }
                         }
                 }
-                
+
                 if viewModel.isPaginationLoading {
                     VStack(spacing: 12) {
                         ProgressView()
                         Text("movieList.loadingMore")
-                            .font(.caption)
+                            .captionStyle()
                             .foregroundColor(.secondary)
                     }
                     .frame(maxWidth: .infinity)
@@ -39,7 +47,7 @@ struct MovieListSuccessView: View {
                     .padding()
                 }
             }
-            .padding()
+            .padding(gridPadding)
         }
     }
 }

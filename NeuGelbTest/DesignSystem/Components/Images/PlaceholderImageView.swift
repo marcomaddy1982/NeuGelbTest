@@ -1,30 +1,59 @@
 import SwiftUI
 
 struct PlaceholderImageView: View {
-    let height: CGFloat
+
+    enum Size {
+        case small   // movie card thumbnail
+        case large   // detail backdrop
+
+        var baseHeight: CGFloat {
+            switch self {
+            case .small: return 140
+            case .large: return 200
+            }
+        }
+
+        var baseIconSize: CGFloat {
+            switch self {
+            case .small: return 36
+            case .large: return 48
+            }
+        }
+
+        var relativeTextStyle: Font.TextStyle {
+            switch self {
+            case .small: return .title
+            case .large: return .largeTitle
+            }
+        }
+    }
+
+    let size: Size
     let imageName: String
-    let iconSize: CGFloat
     let iconColor: Color
-    
+
+    @ScaledMetric private var scaledHeight: CGFloat
+    @ScaledMetric private var scaledIconSize: CGFloat
+
     init(
-        height: CGFloat = 200,
+        size: Size = .large,
         imageName: String = "film.fill",
-        iconSize: CGFloat = 48,
         iconColor: Color = .gray
     ) {
-        self.height = height
+        self.size = size
         self.imageName = imageName
-        self.iconSize = iconSize
         self.iconColor = iconColor
+        _scaledHeight = ScaledMetric(wrappedValue: size.baseHeight, relativeTo: size.relativeTextStyle)
+        _scaledIconSize = ScaledMetric(wrappedValue: size.baseIconSize, relativeTo: size.relativeTextStyle)
     }
-    
+
     var body: some View {
         VStack {
             Image(systemName: imageName)
-                .font(.system(size: iconSize))
+                .font(.system(size: scaledIconSize))
                 .foregroundColor(iconColor)
         }
-        .frame(height: height)
+        .frame(height: scaledHeight)
         .frame(maxWidth: .infinity)
         .background(AppColors.backgroundNeutral)
     }
@@ -32,7 +61,7 @@ struct PlaceholderImageView: View {
 
 #Preview {
     VStack(spacing: 16) {
-        PlaceholderImageView()
-        PlaceholderImageView(height: 140, imageName: "star.fill", iconColor: .orange)
+        PlaceholderImageView(size: .large)
+        PlaceholderImageView(size: .small, imageName: "star.fill", iconColor: .orange)
     }
 }

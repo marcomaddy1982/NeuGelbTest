@@ -10,9 +10,13 @@ The project is structured around the following key technical decisions:
 - [Secure configuration management via `.xcconfig`](#4-configuration--secret-management)
 - [MVVM with protocol-backed ViewModels and container views](#5-mvvm-architecture)
 - [Dedicated service layer](#6-service-layer)
-- [Combine-powered search autocomplete](#7-search-autocomplete-with-combine)
-- [Unit tests for ViewModels and Request Builder](#8-testing)
-- [Bonus — Offline cache with SwiftData and Repository pattern](#bonus--offline-cache-with-swiftdata-separate-branch)
+- [Offline cache with SwiftData and Repository pattern](#7-offline-cache-with-swiftdata)
+- [Design System](#8-design-system)
+- [Localisation](#9-localisation)
+- [Dynamic Type](#10-dynamic-type)
+- [Dark Mode](#11-dark-mode)
+- [Combine-powered search autocomplete](#12-search-autocomplete-with-combine)
+- [Unit tests for ViewModels and Request Builder](#13-testing)
 
 ---
 
@@ -135,7 +139,83 @@ A dedicated Service layer sits between the ViewModels and the networking library
 - **Testability**: Services are injected via protocols and can be mocked in isolation.
 - **Consistency**: The same `async/await` model flows uniformly from network to ViewModel.
 
-## 7. Search Autocomplete with Combine
+---
+
+## 7. Offline Cache with SwiftData
+
+A caching layer is implemented via a **Repository** pattern. The repository sits between the ViewModel and the service, and is responsible for deciding whether to return cached data from a local SwiftData store or fetch fresh data from the network.
+
+SwiftData backs two persistence needs in the app:
+
+- **Movie list cache**: Popular movies are cached locally so the list is available immediately on relaunch without a network round-trip.
+- **Recently Viewed history**: Movies opened by the user are saved to a SwiftData store and surfaced in the Recently Viewed tab.
+
+### Why SwiftData
+
+- **Native Swift API**: Built on Swift macros, integrates seamlessly with SwiftUI and Swift concurrency.
+- **Minimal boilerplate**: Models are declared with `@Model`, no manual schema definitions needed.
+- **Type safety**: Queries and relationships are fully typed.
+- **SwiftUI integration**: The `@Query` macro makes persisted data observable directly in views.
+
+### Why the Repository Pattern
+
+- **Single decision point**: Cache-or-network logic lives in one place, invisible to the ViewModel.
+- **Transparent to the ViewModel**: Called exactly like a service — no changes needed above this layer.
+- **Easily testable**: Conforms to a protocol, so it can be mocked like any other dependency.
+- **Flexible strategy**: Cache invalidation rules can evolve inside the repository without touching the rest of the codebase.
+
+---
+
+## 8. Design System
+
+A dedicated `DesignSystem` module centralises colors (`AppColors`), typography (`AppFonts`, `TextStyles`), and reusable components. Color tokens map to named asset catalog entries, font tokens use `Font.TextStyle`, and components accept `LocalizedStringKey` — keeping views free of raw values and boilerplate.
+
+### Benefits
+
+- **Single source of truth**: A color or font change propagates everywhere automatically.
+- **Composability**: Components are small, focused, and combine freely.
+- **Consistency**: No ad-hoc styling in feature views.
+- **Maintainability**: Adding a new screen requires no design decisions — tokens and components provide the answers.
+
+---
+
+## 9. Localisation
+
+All strings are managed via a single `Localizable.xcstrings` file (`en` + `it`). Keys follow a `feature.context` convention so copy can change without touching the codebase. Components use `LocalizedStringKey`; dynamic values are localised at the ViewModel layer via `String(localized:)`.
+
+### Benefits
+
+- **Compile-time coverage**: Missing translations are build warnings, not silent runtime blanks.
+- **Maintainability**: All strings for all languages live in one file — no hunting across `.strings` files.
+- **Clean call sites**: Feature views pass string literals directly; the framework handles resolution.
+
+---
+
+## 10. Dynamic Type
+
+All fonts use `Font.system(.textStyle)` and layout values use `@ScaledMetric(relativeTo:)` so text and surrounding space scale proportionally from Extra Small to Accessibility 5. The movie list and search grid collapse from two columns to one at `>= .accessibility1`.
+
+### Benefits
+
+- **Inclusivity**: Users with visual impairments who rely on large text sizes get a fully functional layout, not a broken one.
+- **Zero runtime cost**: Scaling is handled by the framework — no custom logic required.
+- **Proportional layout**: `@ScaledMetric` ensures spacing grows and shrinks in proportion with text, not independently.
+
+---
+
+## 11. Dark Mode
+
+Every color token maps to a named asset catalog color set with explicit light and dark variants. An in-app appearance picker (System / Light / Dark) persists the choice via `@AppStorage` and applies it at the window root via `.preferredColorScheme()`.
+
+### Benefits
+
+- **Full customisation preserved**: Both light and dark values are explicit design decisions, not system color approximations.
+- **User control**: The in-app override lets users keep the app dark while the phone is in light mode, or vice versa.
+- **Automatic resolution**: SwiftUI handles variant selection — no `if colorScheme == .dark` conditionals in views.
+
+---
+
+## 12. Search Autocomplete with Combine
 
 Search is powered by Combine, with the query string exposed as a `@Published` property on the ViewModel. Two separate Combine pipelines drive the behaviour:
 
@@ -151,7 +231,7 @@ Search is powered by Combine, with the query string exposed as a `@Published` pr
 
 ---
 
-## 8. Testing
+## 13. Testing
 
 Unit tests cover two key areas: **ViewModels** and the **Request Builder**.
 
@@ -165,26 +245,6 @@ The Request Builder is tested by asserting that given a set of inputs (endpoint,
 - **High confidence at low cost**: Covers the two most logic-heavy components of the codebase.
 - **Mocks are free**: Protocol-backed types require no extra abstraction to be testable.
 - **Regression safety**: Breaking changes to request construction or ViewModel logic are caught immediately.
-
----
-
-## Bonus — Offline Cache with SwiftData *(separate branch)*
-
-A caching layer is introduced via a **Repository** pattern. The repository sits between the ViewModel and the service, and is responsible for deciding whether to return cached data from a local SwiftData store or fetch fresh data from the network.
-
-### Why SwiftData
-
-- **Native Swift API**: Built on Swift macros, integrates seamlessly with SwiftUI and Swift concurrency.
-- **Minimal boilerplate**: Models are declared with `@Model`, no manual schema definitions needed.
-- **Type safety**: Queries and relationships are fully typed.
-- **SwiftUI integration**: The `@Query` macro makes persisted data observable directly in views.
-
-### Why the Repository Pattern
-
-- **Single decision point**: Cache-or-network logic lives in one place, invisible to the ViewModel.
-- **Transparent to the ViewModel**: Called exactly like a service — no changes needed above this layer.
-- **Easily testable**: Conforms to a protocol, so it can be mocked like any other dependency.
-- **Flexible strategy**: Cache invalidation rules can evolve inside the repository without touching the rest of the codebase.
 
 ---
 

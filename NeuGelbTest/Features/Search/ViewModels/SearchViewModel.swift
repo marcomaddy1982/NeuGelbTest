@@ -87,6 +87,7 @@ final class SearchViewModel {
     private func setupSearchPipeline() {
         // Pipeline 1: Handle valid searches (debounced)
         searchQuerySubject
+            .filter { !$0.isEmpty }
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.global(qos: .userInitiated))
             .removeDuplicates()
             .receive(on: DispatchQueue.main)

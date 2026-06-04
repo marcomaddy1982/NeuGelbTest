@@ -13,6 +13,7 @@ struct SettingsView: View {
                 cacheSection
                 aboutSection
             }
+            .preferredColorScheme(viewModel.appearanceMode.colorScheme)
             .navigationTitle("settings.navigationTitle")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

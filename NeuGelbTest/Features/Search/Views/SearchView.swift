@@ -9,9 +9,10 @@ import SwiftUI
 
 @MainActor
 struct SearchView: View {
-    @StateObject private var viewModel = SearchViewModelFactory.makeSearchViewModel()
-    
+    @State private var viewModel = SearchViewModelFactory.makeSearchViewModel()
+
     var body: some View {
+        @Bindable var viewModel = viewModel
         NavigationStack {
             VStack(spacing: 0) {
                 switch viewModel.state {

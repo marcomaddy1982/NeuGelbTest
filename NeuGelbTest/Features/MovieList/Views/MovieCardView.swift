@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MovieCardView: View {
-    @StateObject var viewModel: MovieCardViewModel
+    @State var viewModel: MovieCardViewModel
 
     @ScaledMetric(relativeTo: .title) private var cardHeight: CGFloat = 245
     @ScaledMetric(relativeTo: .title) private var posterHeight: CGFloat = 140

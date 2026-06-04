@@ -7,7 +7,7 @@
 
 import Foundation
 import os
-import Combine
+import Observation
 
 enum ViewState: Equatable {
     case loading
@@ -15,12 +15,12 @@ enum ViewState: Equatable {
     case error(String)
 }
 
-@MainActor
-final class MovieListViewModel: ObservableObject {
-    @Published var state: ViewState = .loading
-    @Published var isPaginationLoading: Bool = false
-    @Published var currentPage: Int = 1
-    @Published var hasMorePages: Bool = true
+@Observable
+final class MovieListViewModel {
+    var state: ViewState = .loading
+    private(set) var isPaginationLoading: Bool = false
+    private(set) var currentPage: Int = 1
+    private(set) var hasMorePages: Bool = true
 
     private let movieRepository: MovieRepositoryProtocol
     private let imageService: ImageServiceProtocol

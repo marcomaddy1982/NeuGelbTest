@@ -7,7 +7,7 @@
 
 import Foundation
 import os
-import Combine
+import Observation
 
 enum MovieDetailViewState {
     case loading
@@ -15,9 +15,9 @@ enum MovieDetailViewState {
     case error(String)
 }
 
-@MainActor
-final class MovieDetailViewModel: ObservableObject {
-    @Published var state: MovieDetailViewState = .loading
+@Observable
+final class MovieDetailViewModel {
+    var state: MovieDetailViewState = .loading
     
     private let movieService: MovieServiceProtocol
     private(set) var imageService: ImageServiceProtocol

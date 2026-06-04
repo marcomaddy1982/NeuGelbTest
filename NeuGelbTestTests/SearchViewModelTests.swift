@@ -50,7 +50,7 @@ struct SearchViewModelTests {
         let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
         
         // Update query but wait less than debounce time (300ms)
-        sut.updateSearchQuery("Test")
+        sut.searchQuery = "Test"
         try? await Task.sleep(nanoseconds: 100_000_000) // 100ms
         
         // Should not have called API yet
@@ -65,7 +65,7 @@ struct SearchViewModelTests {
 
          let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
          
-         sut.updateSearchQuery("Test")
+         sut.searchQuery = "Test"
          try? await Task.sleep(nanoseconds: 400_000_000) // Wait for debounce + margin
          
          #expect(mockSearchService.searchMoviesCallCount == 1)
@@ -81,9 +81,9 @@ struct SearchViewModelTests {
          let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
          
          // Type the same query twice
-         sut.updateSearchQuery("Test")
+         sut.searchQuery = "Test"
          try? await Task.sleep(nanoseconds: 100_000_000) // 100ms
-         sut.updateSearchQuery("Test")
+         sut.searchQuery = "Test"
          try? await Task.sleep(nanoseconds: 400_000_000) // Wait for debounce
          
          // Should only call API once due to removeDuplicates
@@ -101,13 +101,13 @@ struct SearchViewModelTests {
          let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
          
          // Search first
-         sut.updateSearchQuery("Test")
+         sut.searchQuery = "Test"
          try? await Task.sleep(nanoseconds: 400_000_000)
          
          #expect(!sut.searchResults.isEmpty)
          
          // Clear search
-         sut.updateSearchQuery("")
+         sut.searchQuery = ""
          try? await Task.sleep(nanoseconds: 100_000_000)
          
          #expect(sut.searchResults.isEmpty)
@@ -121,7 +121,7 @@ struct SearchViewModelTests {
 
          let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
 
-         sut.updateSearchQuery("Test")
+         sut.searchQuery = "Test"
          try? await Task.sleep(nanoseconds: 400_000_000)
          
          if case .success = sut.state {
@@ -130,7 +130,7 @@ struct SearchViewModelTests {
              Issue.record("State should be success after search")
          }
 
-         sut.updateSearchQuery("")
+         sut.searchQuery = ""
          try? await Task.sleep(nanoseconds: 100_000_000)
          
          if case .empty = sut.state {
@@ -149,7 +149,7 @@ struct SearchViewModelTests {
 
          let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
          
-         sut.updateSearchQuery("Test")
+         sut.searchQuery = "Test"
          try? await Task.sleep(nanoseconds: 400_000_000)
          
          if case .success(let movies) = sut.state {
@@ -169,7 +169,7 @@ struct SearchViewModelTests {
          let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
          
          // First search
-         sut.updateSearchQuery("Query1")
+         sut.searchQuery = "Query1"
          try? await Task.sleep(nanoseconds: 400_000_000)
          
          if case .success(let movies) = sut.state {
@@ -181,7 +181,7 @@ struct SearchViewModelTests {
          mockSearchService.simulateSuccess(with: response2)
          
          // New search should clear previous results
-         sut.updateSearchQuery("Query2")
+         sut.searchQuery = "Query2"
          try? await Task.sleep(nanoseconds: 400_000_000)
          
          if case .success(let movies) = sut.state {
@@ -198,7 +198,7 @@ struct SearchViewModelTests {
           
          let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
          
-         sut.updateSearchQuery("Test")
+         sut.searchQuery = "Test"
          try? await Task.sleep(nanoseconds: 400_000_000)
          
          #expect(sut.currentPage == 1)
@@ -215,7 +215,7 @@ struct SearchViewModelTests {
 
          let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
          
-         sut.updateSearchQuery("Test")
+         sut.searchQuery = "Test"
          try? await Task.sleep(nanoseconds: 400_000_000)
          
          if case .error(let message) = sut.state {
@@ -233,7 +233,7 @@ struct SearchViewModelTests {
 
          let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
          
-         sut.updateSearchQuery("Test")
+         sut.searchQuery = "Test"
          try? await Task.sleep(nanoseconds: 400_000_000)
          
          if case .error(let message) = sut.state {
@@ -254,7 +254,7 @@ struct SearchViewModelTests {
           
          let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
 
-         sut.updateSearchQuery("Test")
+         sut.searchQuery = "Test"
          try? await Task.sleep(nanoseconds: 400_000_000)
          
          if case .success(let movies) = sut.state {
@@ -283,7 +283,7 @@ struct SearchViewModelTests {
 
          let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
          
-         sut.updateSearchQuery("Test")
+         sut.searchQuery = "Test"
          try? await Task.sleep(nanoseconds: 400_000_000)
          
          #expect(sut.currentPage == 1)
@@ -306,7 +306,7 @@ struct SearchViewModelTests {
 
          let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
          
-         sut.updateSearchQuery("Test")
+         sut.searchQuery = "Test"
          try? await Task.sleep(nanoseconds: 400_000_000)
          
          #expect(sut.hasMorePages == false)
@@ -318,16 +318,18 @@ struct SearchViewModelTests {
      }
     
      @Test("shouldLoadNextPage detects last movie")
-     func testShouldLoadNextPageDetectsLastMovie() {
+     func testShouldLoadNextPageDetectsLastMovie() async {
          let mockSearchService = MockSearchService()
          let mockImageService = MockImageService()
-         
+
          let movies = TestDataBuilder.makeSampleMovieList(count: 3)
+         let response = TestDataBuilder.makeSampleMovieListResponse(page: 1, totalPages: 3, results: movies)
+         mockSearchService.simulateSuccess(with: response)
+
          let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
-         
-         sut.searchResults = movies
-         sut.hasMorePages = true
-         
+         sut.searchQuery = "Test"
+         try? await Task.sleep(nanoseconds: 400_000_000)
+
          #expect(sut.shouldLoadNextPage(for: movies.last!))
          #expect(!sut.shouldLoadNextPage(for: movies.first!))
      }

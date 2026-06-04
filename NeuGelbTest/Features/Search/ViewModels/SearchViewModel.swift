@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import Observation
 
 enum SearchViewState: Sendable {
     case empty
@@ -15,22 +16,24 @@ enum SearchViewState: Sendable {
     case error(String)
 }
 
-@MainActor
-final class SearchViewModel: ObservableObject {
-    @Published var searchQuery: String = ""
-    @Published var searchResults: [Movie] = []
-    @Published var state: SearchViewState = .empty
-    @Published var selectedMovieId: Int? = nil
-
-    @Published var currentPage: Int = 1
-    @Published var hasMorePages: Bool = false
-    @Published var isPaginationLoading: Bool = false
+@Observable
+final class SearchViewModel {
+    var searchQuery: String = "" {
+        didSet { searchQuerySubject.send(searchQuery) }
+    }
+    var searchResults: [Movie] = []
+    var state: SearchViewState = .empty
+    var selectedMovieId: Int? = nil
+    private(set) var currentPage: Int = 1
+    private(set) var hasMorePages: Bool = false
+    private(set) var isPaginationLoading: Bool = false
 
     private let searchService: SearchServiceProtocol
     let imageService: ImageServiceProtocol
 
-    nonisolated(unsafe) private var cancellables: Set<AnyCancellable> = []
-    
+    private let searchQuerySubject = PassthroughSubject<String, Never>()
+    private var cancellables: Set<AnyCancellable> = []
+
     init(searchService: SearchServiceProtocol, imageService: ImageServiceProtocol) {
         self.searchService = searchService
         self.imageService = imageService
@@ -41,13 +44,11 @@ final class SearchViewModel: ObservableObject {
 
     func performSearch(query: String) {
         isPaginationLoading = false
-
         currentPage = 1
         searchResults = []
         hasMorePages = false
-        
         state = .loading
-        
+
         Task {
             await executeSearch(query: query, page: 1)
         }
@@ -76,10 +77,6 @@ final class SearchViewModel: ObservableObject {
         selectedMovieId = nil
     }
 
-    func updateSearchQuery(_ query: String) {
-        searchQuery = query
-    }
-
     func shouldLoadNextPage(for movie: Movie) -> Bool {
         guard let lastMovie = searchResults.last else { return false }
         return movie.id == lastMovie.id && hasMorePages
@@ -88,10 +85,9 @@ final class SearchViewModel: ObservableObject {
     // MARK: - Private Methods
 
     private func setupSearchPipeline() {
-        // Pipeline 1: Handle valid searches (3+ characters)
-        $searchQuery
-            .debounce(for: .milliseconds(300),
-                      scheduler: DispatchQueue.global(qos: .userInitiated))
+        // Pipeline 1: Handle valid searches (debounced)
+        searchQuerySubject
+            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.global(qos: .userInitiated))
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] query in
@@ -100,8 +96,9 @@ final class SearchViewModel: ObservableObject {
             .store(in: &cancellables)
 
         // Pipeline 2: Handle empty queries (user taps X button)
-        $searchQuery
+        searchQuerySubject
             .filter { $0.isEmpty }
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.clearSearchState()
             }
@@ -111,20 +108,19 @@ final class SearchViewModel: ObservableObject {
     private func executeSearch(query: String, page: Int, isPagination: Bool = false) async {
         do {
             let response = try await searchService.searchMovies(query: query, page: page)
-            
+
             if isPagination {
                 searchResults.append(contentsOf: response.results)
                 isPaginationLoading = false
             } else {
                 searchResults = response.results
             }
-            
+
             currentPage = page
             hasMorePages = page < response.totalPages
             state = .success(searchResults)
         } catch {
-            let errorMessage = error.localizedDescription
-            state = .error(errorMessage)
+            state = .error(error.localizedDescription)
             isPaginationLoading = false
         }
     }
@@ -135,9 +131,5 @@ final class SearchViewModel: ObservableObject {
         hasMorePages = false
         isPaginationLoading = false
         state = .empty
-    }
-
-    deinit {
-        cancellables.forEach { $0.cancel() }
-    }
+     }
 }

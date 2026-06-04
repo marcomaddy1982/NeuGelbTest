@@ -6,9 +6,9 @@
 //
 
 import Foundation
-import Combine
 import SwiftUI
 import os
+import Observation
 
 enum ImageLoadingState {
     case idle
@@ -17,13 +17,10 @@ enum ImageLoadingState {
     case error(String)
 }
 
-@MainActor
-final class MovieCardViewModel: ObservableObject {
+@Observable
+final class MovieCardViewModel {
+    var imageState: ImageLoadingState = .idle
     let movie: Movie
-    private let imageService: any ImageServiceProtocol
-    
-    @Published var imageState: ImageLoadingState = .idle
-    
     var title: String { movie.title }
     var releaseDate: String {
         guard let dateString = movie.releaseDate, !dateString.isEmpty else {
@@ -33,7 +30,8 @@ final class MovieCardViewModel: ObservableObject {
     }
     var voteAverage: String { String(format: "%.1f", movie.voteAverage) }
     var posterPath: String? { movie.posterPath }
-    
+
+    private let imageService: any ImageServiceProtocol
     private var imageLoadTask: Task<Void, Never>?
     
     init(movie: Movie, imageService: any ImageServiceProtocol) {
@@ -67,9 +65,5 @@ final class MovieCardViewModel: ObservableObject {
     func cancelImageLoad() {
         imageLoadTask?.cancel()
         imageLoadTask = nil
-    }
-    
-    deinit {
-        imageLoadTask?.cancel()
     }
 }

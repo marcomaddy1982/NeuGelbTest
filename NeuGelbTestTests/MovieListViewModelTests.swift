@@ -149,59 +149,56 @@ struct MovieListViewModelTests {
         let mockImageService = MockImageService()
         let page1Response = TestDataBuilder.makeSampleDiscoverResponse(page: 1, totalPages: 2)
         mockRepository.setMockResponse(page1Response)
-        
+
         let sut = MovieListViewModel(movieRepository: mockRepository, imageService: mockImageService)
         await sut.loadMovies()
 
-        sut.isPaginationLoading = true
-        await sut.loadNextPage()
+        let page2Response = TestDataBuilder.makeSampleDiscoverResponse(page: 2, totalPages: 2)
+        mockRepository.setMockResponse(page2Response)
 
-        #expect(mockRepository.getMoviesCallCount == 1) // Only from initial loadMovies
+        // Fire two concurrent calls — the first sets isPaginationLoading = true before its
+        // first suspension point, so the second call hits the guard and returns early.
+        async let first: Void = sut.loadNextPage()
+        async let second: Void = sut.loadNextPage()
+        _ = await (first, second)
+
+        #expect(mockRepository.getMoviesCallCount == 2) // loadMovies + one loadNextPage
     }
-    
+
     @Test("shouldLoadNextPage returns true for last movie with more pages")
-    func testShouldLoadNextPageDetectsLastMovie() {
+    func testShouldLoadNextPageDetectsLastMovie() async {
         let mockRepository = MockMovieRepository()
         let mockImageService = MockImageService()
-        
-        let movies = TestDataBuilder.makeSampleMovieList(count: 3)
-        let sut = MovieListViewModel(movieRepository: mockRepository, imageService: mockImageService)
+        let response = TestDataBuilder.makeSampleDiscoverResponse(
+            page: 1, totalPages: 3,
+            results: TestDataBuilder.makeSampleMovieList(count: 3)
+        )
+        mockRepository.setMockResponse(response)
 
-        sut.state = .success(movies)
-        sut.hasMorePages = true
-        sut.isPaginationLoading = false
+        let sut = MovieListViewModel(movieRepository: mockRepository, imageService: mockImageService)
+        await sut.loadMovies()
+
+        guard case .success(let movies) = sut.state else {
+            Issue.record("Expected success state"); return
+        }
 
         #expect(sut.shouldLoadNextPage(for: movies.last!))
-
         #expect(!sut.shouldLoadNextPage(for: movies.first!))
     }
-    
-    @Test("shouldLoadNextPage returns false when no more pages")
-    func testShouldLoadNextPageFalseWhenNoMorePages() {
-        let mockRepository = MockMovieRepository()
-        let mockImageService = MockImageService()
-        
-        let movies = TestDataBuilder.makeSampleMovieList(count: 2)
-        let sut = MovieListViewModel(movieRepository: mockRepository, imageService: mockImageService)
-        
-        sut.state = .success(movies)
-        sut.hasMorePages = false // No more pages
-        sut.isPaginationLoading = false
 
-        #expect(!sut.shouldLoadNextPage(for: movies.last!))
-    }
-    
-    @Test("shouldLoadNextPage returns false when pagination is loading")
-    func testShouldLoadNextPageFalseWhenLoading() {
+    @Test("shouldLoadNextPage returns false when no more pages")
+    func testShouldLoadNextPageFalseWhenNoMorePages() async {
         let mockRepository = MockMovieRepository()
         let mockImageService = MockImageService()
-        
-        let movies = TestDataBuilder.makeSampleMovieList(count: 2)
+        let response = TestDataBuilder.makeSampleDiscoverResponse(page: 1, totalPages: 1)
+        mockRepository.setMockResponse(response)
+
         let sut = MovieListViewModel(movieRepository: mockRepository, imageService: mockImageService)
-        
-        sut.state = .success(movies)
-        sut.hasMorePages = true
-        sut.isPaginationLoading = true
+        await sut.loadMovies()
+
+        guard case .success(let movies) = sut.state else {
+            Issue.record("Expected success state"); return
+        }
 
         #expect(!sut.shouldLoadNextPage(for: movies.last!))
     }

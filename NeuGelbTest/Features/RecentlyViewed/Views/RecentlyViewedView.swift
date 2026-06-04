@@ -10,7 +10,7 @@ import SwiftData
 
 @MainActor
 struct RecentlyViewedView: View {
-    @StateObject private var viewModel = RecentlyViewedViewModelFactory.makeRecentlyViewedViewModel()
+    @State private var viewModel = RecentlyViewedViewModelFactory.makeRecentlyViewedViewModel()
     @Injected<ModelContainer> var modelContainer: ModelContainer
     
     var body: some View {

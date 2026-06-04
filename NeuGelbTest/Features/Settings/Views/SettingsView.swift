@@ -1,10 +1,11 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @StateObject private var viewModel = SettingsViewModelFactory.makeSettingsViewModel()
+    @State private var viewModel = SettingsViewModelFactory.makeSettingsViewModel()
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
+        @Bindable var viewModel = viewModel
         NavigationStack {
             Form {
                 appearanceSection

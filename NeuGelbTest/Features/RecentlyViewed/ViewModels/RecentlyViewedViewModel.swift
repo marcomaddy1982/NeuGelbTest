@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Combine
+import Observation
 
 enum RecentlyViewedViewState {
     case empty
@@ -14,9 +14,9 @@ enum RecentlyViewedViewState {
     case error(String)
 }
 
-@MainActor
-final class RecentlyViewedViewModel: ObservableObject {
-    @Published var state: RecentlyViewedViewState = .empty
+@Observable
+final class RecentlyViewedViewModel {
+    var state: RecentlyViewedViewState = .empty
     
     private let recentlyViewedRepository: RecentlyViewedRepositoryProtocol
     

@@ -1,14 +1,14 @@
 import Foundation
 import SwiftUI
-import Combine
+import Observation
 
-@MainActor
-final class SettingsViewModel: ObservableObject {
-    @AppStorage("appearanceMode") var appearanceMode: AppearanceMode = .system
-    @AppStorage("defaultTab") var defaultTab: DefaultTab = .discover
+@Observable
+final class SettingsViewModel {
+    @ObservationIgnored @AppStorage("appearanceMode") var appearanceMode: AppearanceMode = .system
+    @ObservationIgnored @AppStorage("defaultTab") var defaultTab: DefaultTab = .discover
 
-    @Published var showClearCacheConfirmation: Bool = false
-    @Published var isCacheCleared: Bool = false
+    var showClearCacheConfirmation: Bool = false
+    var isCacheCleared: Bool = false
 
     private let imageCache: ImageCaching
 

@@ -23,7 +23,6 @@ final class SearchViewModel {
     }
     var searchResults: [Movie] = []
     var state: SearchViewState = .empty
-    var selectedMovieId: Int? = nil
     private(set) var currentPage: Int = 1
     private(set) var hasMorePages: Bool = false
     private(set) var isPaginationLoading: Bool = false
@@ -67,14 +66,6 @@ final class SearchViewModel {
                 isPagination: true
             )
         }
-    }
-
-    func selectMovie(_ movieId: Int) {
-        selectedMovieId = movieId
-    }
-
-    func clearSelection() {
-        selectedMovieId = nil
     }
 
     func shouldLoadNextPage(for movie: Movie) -> Bool {

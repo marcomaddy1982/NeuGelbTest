@@ -8,52 +8,55 @@
 import SwiftUI
 
 struct AppRootView: View {
-    @AppStorage("defaultTab") private var defaultTab: DefaultTab = .discover
-    @State private var selectedTab: Tab = .discover
-    @State private var showSettings: Bool = false
-
-    enum Tab {
-        case discover
-        case search
-        case recentlyViewed
-    }
+    @State private var viewModel = AppRootViewModelFactory.make()
 
     var body: some View {
-        TabView(selection: $selectedTab) {
-            NavigationStack {
+        @Bindable var viewModel = viewModel
+        TabView(selection: $viewModel.selectedTab) {
+            NavigationStack(path: $viewModel.discoverRouter.path) {
                 MovieListView()
-                    .toolbar {
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            Button {
-                                showSettings = true
-                            } label: {
-                                Image(systemName: "gearshape")
-                            }
+                    .navigationDestination(for: AppRoutePath.self) { routePath in
+                        switch routePath.route {
+                        case .movieDetail(let movie):
+                            MovieDetailView(movie: movie)
                         }
                     }
             }
+            .environment(viewModel.discoverRouter)
             .tabItem {
                 Label("tab.discover", systemImage: "list.bullet")
             }
-            .tag(Tab.discover)
+            .tag(AppRootViewModel.Tab.discover)
 
-            SearchView()
-                .tabItem {
-                    Label("tab.search", systemImage: "magnifyingglass")
-                }
-                .tag(Tab.search)
+            NavigationStack(path: $viewModel.searchRouter.path) {
+                SearchView()
+                    .navigationDestination(for: AppRoutePath.self) { routePath in
+                        switch routePath.route {
+                        case .movieDetail(let movie):
+                            MovieDetailView(movie: movie)
+                        }
+                    }
+            }
+            .environment(viewModel.searchRouter)
+            .tabItem {
+                Label("tab.search", systemImage: "magnifyingglass")
+            }
+            .tag(AppRootViewModel.Tab.search)
 
-            RecentlyViewedView()
-                .tabItem {
-                    Label("tab.recentlyViewed", systemImage: "clock")
-                }
-                .tag(Tab.recentlyViewed)
-        }
-        .onAppear {
-            selectedTab = defaultTab.tab
-        }
-        .sheet(isPresented: $showSettings) {
-            SettingsView()
+            NavigationStack(path: $viewModel.recentlyViewedRouter.path) {
+                RecentlyViewedView()
+                    .navigationDestination(for: AppRoutePath.self) { routePath in
+                        switch routePath.route {
+                        case .movieDetail(let movie):
+                            MovieDetailView(movie: movie)
+                        }
+                    }
+            }
+            .environment(viewModel.recentlyViewedRouter)
+            .tabItem {
+                Label("tab.recentlyViewed", systemImage: "clock")
+            }
+            .tag(AppRootViewModel.Tab.recentlyViewed)
         }
     }
 }

@@ -9,12 +9,15 @@ import SwiftUI
 
 struct MovieCardView: View {
     @State var viewModel: MovieCardViewModel
+    @Environment(AppRouter.self) private var router
 
     @ScaledMetric(relativeTo: .title) private var cardHeight: CGFloat = 245
     @ScaledMetric(relativeTo: .title) private var posterHeight: CGFloat = 140
 
     var body: some View {
-        NavigationLink(destination: MovieDetailView(movie: viewModel.movie)) {
+        Button {
+            router.navigate(to: .movieDetail(viewModel.movie))
+        } label: {
             VStack(alignment: .leading, spacing: 0) {
                 posterImageSection
 
@@ -101,6 +104,7 @@ struct MovieCardView: View {
             MovieCardView(viewModel: viewModel)
                 .padding()
         }
+        .environment(AppRouter())
     } else {
         Text("Preview error")
     }

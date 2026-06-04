@@ -14,28 +14,26 @@ struct RecentlyViewedView: View {
     @Injected<ModelContainer> var modelContainer: ModelContainer
     
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                switch viewModel.state {
-                case .empty:
-                    EmptyStateView(
-                        icon: "clock.fill",
-                        title: "recentlyViewed.empty.title",
-                        message: "recentlyViewed.empty.subtitle"
-                    )
-                case .success:
-                    RecentlyResearchedView()
-                case .error(let message):
-                    ErrorStateView(
-                        errorMessage: message,
-                        onRetry: {
-                            await viewModel.loadRecentlyViewed()
-                        }
-                    )
-                }
+        VStack(spacing: 0) {
+            switch viewModel.state {
+            case .empty:
+                EmptyStateView(
+                    icon: "clock.fill",
+                    title: "recentlyViewed.empty.title",
+                    message: "recentlyViewed.empty.subtitle"
+                )
+            case .success:
+                RecentlyResearchedView()
+            case .error(let message):
+                ErrorStateView(
+                    errorMessage: message,
+                    onRetry: {
+                        await viewModel.loadRecentlyViewed()
+                    }
+                )
             }
-            .navigationTitle("recentlyViewed.navigationTitle")
         }
+        .navigationTitle("recentlyViewed.navigationTitle")
         .modelContext(ModelContext(modelContainer))
         .task {
             await viewModel.loadRecentlyViewed()

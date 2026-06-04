@@ -5,7 +5,7 @@ enum DefaultTab: String, CaseIterable {
     case search
     case recentlyViewed
 
-    var tab: AppRootView.Tab {
+    var tab: AppRootViewModel.Tab {
         switch self {
         case .discover:       return .discover
         case .search:         return .search

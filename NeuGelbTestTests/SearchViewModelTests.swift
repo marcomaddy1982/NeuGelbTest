@@ -333,31 +333,4 @@ struct SearchViewModelTests {
          #expect(sut.shouldLoadNextPage(for: movies.last!))
          #expect(!sut.shouldLoadNextPage(for: movies.first!))
      }
-    
-     @Test("Select movie sets selected movie ID")
-     func testSelectMovieSetsMovieId() {
-         let mockSearchService = MockSearchService()
-         let mockImageService = MockImageService()
-         
-         let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
-         let testMovie = TestDataBuilder.makeSampleMovie(tmdbId: 12345)
-         
-         sut.selectMovie(testMovie.tmdbId)
-         
-         #expect(sut.selectedMovieId == 12345)
-     }
-    
-     @Test("Clear selection resets movie ID")
-     func testClearSelectionResetsMovieId() {
-         let mockSearchService = MockSearchService()
-         let mockImageService = MockImageService()
-         
-         let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
-         
-         sut.selectMovie(12345)
-         #expect(sut.selectedMovieId == 12345)
-         
-         sut.clearSelection()
-         #expect(sut.selectedMovieId == nil)
-     }
 }

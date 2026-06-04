@@ -21,9 +21,7 @@ struct RecentlyResearchedView: View {
                 spacing: 16
             ) {
                 ForEach(recentlyViewedMovies, id: \.tmdbId) { movie in
-                    NavigationLink(destination: MovieDetailView(movie: movie.toMovie())) {
-                        MovieCardView(viewModel: MovieCardViewModelFactory.makeMovieCardViewModel(for: movie.toMovie()))
-                    }
+                    MovieCardView(viewModel: MovieCardViewModelFactory.makeMovieCardViewModel(for: movie.toMovie()))
                 }
             }
             .padding()

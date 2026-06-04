@@ -9,34 +9,46 @@ import SwiftUI
 
 struct MovieListView: View {
     @State private var viewModel = MovieListViewModelFactory.makeMovieListViewModel()
-    
+
     var body: some View {
-        NavigationStack {
-            Group {
-                switch viewModel.state {
-                case .loading:
-                    MovieListLoadingView()
-                    
-                case .success(let movies):
-                    MovieListSuccessView(movies: movies, viewModel: viewModel)
-                    
-                case .error(let errorMessage):
-                    ErrorStateView(errorMessage: errorMessage, onRetry: {
-                        await viewModel.loadMovies()
-                    })
+        @Bindable var viewModel = viewModel
+        Group {
+            switch viewModel.state {
+            case .loading:
+                MovieListLoadingView()
+
+            case .success(let movies):
+                MovieListSuccessView(movies: movies, viewModel: viewModel)
+
+            case .error(let errorMessage):
+                ErrorStateView(errorMessage: errorMessage, onRetry: {
+                    await viewModel.loadMovies()
+                })
+            }
+        }
+        .navigationTitle("movieList.navigationTitle")
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    viewModel.showSettings = true
+                } label: {
+                    Image(systemName: "gearshape")
                 }
             }
-            .navigationTitle("movieList.navigationTitle")
-            .task(id: viewModel.state) {
-                // Only load movies if we're in the loading state (initial load)
-                if case .loading = viewModel.state {
-                    await viewModel.loadMovies()
-                }
+        }
+        .sheet(isPresented: $viewModel.showSettings) {
+            SettingsView()
+        }
+        .task(id: viewModel.state) {
+            if case .loading = viewModel.state {
+                await viewModel.loadMovies()
             }
         }
     }
 }
 
 #Preview {
-    MovieListView()
+    NavigationStack {
+        MovieListView()
+    }
 }

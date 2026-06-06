@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Networking
 @testable import NeuGelbTest
 
 final class MockSearchService: SearchServiceProtocol {

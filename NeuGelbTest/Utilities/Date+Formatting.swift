@@ -20,7 +20,7 @@ extension Date {
     }
     
     /// Formats today's date as "yyyy-MM-dd" for API queries
-    static func todayAsAPIFormat() -> String {
+    nonisolated static func todayAsAPIFormat() -> String {
         Date.now.formatted(
             Date.FormatStyle()
                 .year()

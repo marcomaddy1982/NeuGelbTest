@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Networking
 
 struct SearchMovieRequest: NetworkRequest, Sendable {
     typealias Response = MovieListResponse

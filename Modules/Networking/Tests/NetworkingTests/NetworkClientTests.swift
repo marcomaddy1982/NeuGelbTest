@@ -1,16 +1,13 @@
 //
 //  NetworkClientTests.swift
-//  NeuGelbTestTests
-//
-//  Created by Marco Maddalena on 22.03.26.
+//  NetworkingTests
 //
 
 import Testing
 import Foundation
-@testable import NeuGelbTest
+@testable import Networking
 
-@Suite("NetworkClientTests Tests")
-@MainActor
+@Suite("NetworkClient Tests")
 struct NetworkClientTests {
     @Test func buildURLRequest() throws {
         let request = MockRequest()
@@ -30,7 +27,11 @@ struct NetworkClientTests {
     }
 
     @Test func authorizationHeaderAdded() throws {
-        let config = MockNetworkConfig()
+        let config = NetworkConfig(
+            baseURL: URL(string: "https://api.example.com")!,
+            accessToken: "mock-token",
+            imageBaseURL: URL(string: "https://image.example.com")!
+        )
         let request = MockRequest()
         var urlRequest = try request.buildURLRequest()
 

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-@testable import NeuGelbTest
+import Networking
 
 final class MockNetworkClient: Sendable {
     nonisolated(unsafe) var shouldSucceed: Bool = true

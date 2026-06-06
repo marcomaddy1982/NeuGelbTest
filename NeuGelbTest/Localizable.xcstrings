@@ -193,9 +193,6 @@
         }
       }
     },
-    "error.configError %@" : {
-
-    },
     "error.decodingError" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -212,9 +209,6 @@
           }
         }
       }
-    },
-    "error.decodingError %@" : {
-
     },
     "error.httpError" : {
       "extractionState" : "stale",
@@ -233,10 +227,8 @@
         }
       }
     },
-    "error.httpError %lld" : {
-
-    },
     "error.invalidURL" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -253,6 +245,7 @@
       }
     },
     "error.noData" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -269,6 +262,7 @@
       }
     },
     "error.requestCancelled" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -300,9 +294,6 @@
           }
         }
       }
-    },
-    "error.unknown %@" : {
-
     },
     "movieDetail.budget" : {
       "localizations" : {

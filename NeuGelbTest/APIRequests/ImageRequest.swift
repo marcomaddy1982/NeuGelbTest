@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Networking
 
 struct ImageRequest: NetworkRequest, Sendable {
     typealias Response = Data

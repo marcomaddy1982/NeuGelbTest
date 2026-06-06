@@ -1,11 +1,9 @@
 //
 //  HTTPMethod.swift
-//  NeuGelbTest
-//
-//  Created by Marco Maddalena on 22.03.26.
+//  Networking
 //
 
-enum HTTPMethod: String, Sendable {
+public enum HTTPMethod: String, Sendable {
     case get    = "GET"
     case post   = "POST"
     case put    = "PUT"

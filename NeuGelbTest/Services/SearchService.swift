@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Networking
 import os
 
 protocol SearchServiceProtocol {

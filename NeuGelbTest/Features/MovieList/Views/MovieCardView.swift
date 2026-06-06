@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Networking
 
 struct MovieCardView: View {
     @State var viewModel: MovieCardViewModel

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Networking
 
 struct SearchResultsGridView: View {
     let searchResults: [Movie]

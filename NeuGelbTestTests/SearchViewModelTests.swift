@@ -7,6 +7,7 @@
 
 import Testing
 import Foundation
+import Networking
 @testable import NeuGelbTest
 
 @Suite("SearchViewModel Tests")

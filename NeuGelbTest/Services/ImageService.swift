@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Networking
 
 protocol ImageServiceProtocol {
     func loadImage(from posterPath: String) async -> Image?

@@ -1,12 +1,10 @@
 //
 //  MockRequest.swift
-//  NeuGelbTest
-//
-//  Created by Marco Maddalena on 24.03.26.
+//  NetworkingTests
 //
 
 import Foundation
-@testable import NeuGelbTest
+import Networking
 
 struct MockRequest: NetworkRequest {
     typealias Response = MockResponse

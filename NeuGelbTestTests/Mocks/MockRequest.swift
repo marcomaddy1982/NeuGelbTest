@@ -16,6 +16,7 @@ struct MockRequest: NetworkRequest {
     var method: HTTPMethod = .get
     var headers: [String: String] = ["Accept": "application/json"]
     var queryParameters: [String: String]? = nil
+    var body: Data? = nil
 }
 
 struct MockResponse: Decodable, Sendable {

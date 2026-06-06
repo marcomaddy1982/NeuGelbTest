@@ -15,11 +15,14 @@ protocol NetworkRequest: Sendable {
     var method: HTTPMethod { get }
     var headers: [String: String] { get }
     var queryParameters: [String: String]? { get }
+    var body: Data? { get }
     
     func buildURLRequest() throws -> URLRequest
 }
 
 extension NetworkRequest {
+    var body: Data? { nil }
+    
     func buildURLRequest() throws -> URLRequest {
         guard var urlComponents = URLComponents(
             url: baseURL.appendingPathComponent(endpoint),
@@ -40,6 +43,7 @@ extension NetworkRequest {
         
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
+        request.httpBody = body
         
         for (key, value) in headers {
             request.setValue(value, forHTTPHeaderField: key)

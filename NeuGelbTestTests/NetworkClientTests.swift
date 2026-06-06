@@ -49,4 +49,34 @@ struct NetworkClientTests {
         #expect(urlRequest.value(forHTTPHeaderField: "Accept") == "application/json")
         #expect(urlRequest.value(forHTTPHeaderField: "Custom-Header") == "CustomValue")
     }
+
+    @Test func bodyIsNilByDefault() throws {
+        let request = MockRequest()
+        let urlRequest = try request.buildURLRequest()
+
+        #expect(urlRequest.httpBody == nil)
+    }
+
+    @Test func bodyIsAttachedWhenPresent() throws {
+        let payload = #"{"name":"test"}"#.data(using: .utf8)!
+        var request = MockRequest()
+        request.method = .post
+        request.body = payload
+
+        let urlRequest = try request.buildURLRequest()
+
+        #expect(urlRequest.httpMethod == "POST")
+        #expect(urlRequest.httpBody == payload)
+    }
+
+    @Test func httpMethodIsSetCorrectly() throws {
+        let methods: [HTTPMethod] = [.get, .post, .put, .patch, .delete]
+
+        for method in methods {
+            var request = MockRequest()
+            request.method = method
+            let urlRequest = try request.buildURLRequest()
+            #expect(urlRequest.httpMethod == method.rawValue)
+        }
+    }
 }

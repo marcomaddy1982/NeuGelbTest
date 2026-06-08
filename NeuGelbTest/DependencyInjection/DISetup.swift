@@ -45,6 +45,15 @@ func setupDependencies() {
         
         let recentlyViewedRepository = RecentlyViewedRepository()
         DIContainer.shared.register(recentlyViewedRepository as RecentlyViewedRepositoryProtocol)
+
+        let keychainService = KeychainService()
+        DIContainer.shared.register(keychainService as KeychainServiceProtocol)
+
+        let sessionManager = SessionManager()
+        DIContainer.shared.register(sessionManager as SessionManagerProtocol)
+
+        let authService = AuthService()
+        DIContainer.shared.register(authService as AuthServiceProtocol)
     } catch {
         print("❌ Failed to setup dependencies: \(error)")
     }

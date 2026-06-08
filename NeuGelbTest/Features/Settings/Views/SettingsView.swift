@@ -2,12 +2,14 @@ import SwiftUI
 
 struct SettingsView: View {
     @State private var viewModel = SettingsViewModelFactory.makeSettingsViewModel()
+    @State private var authViewModel = AuthViewModelFactory.makeAuthViewModel()
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         @Bindable var viewModel = viewModel
         NavigationStack {
             Form {
+                accountSection
                 appearanceSection
                 defaultTabSection
                 cacheSection
@@ -40,6 +42,44 @@ struct SettingsView: View {
     }
 
     // MARK: - Sections
+
+    private var accountSection: some View {
+        Section(LocalizedStringKey("settings.section.account")) {
+            switch authViewModel.state {
+            case .loggedOut:
+                Button(LocalizedStringKey("settings.account.login")) {
+                    Task { await authViewModel.login() }
+                }
+            case .loading:
+                HStack {
+                    ProgressView()
+                    Text("settings.account.loading")
+                        .foregroundColor(.secondary)
+                        .font(AppFonts.caption)
+                }
+            case .loggedIn(let sessionId):
+                LabeledContent(LocalizedStringKey("settings.account.session")) {
+                    Text(String(sessionId.prefix(8)) + "…")
+                        .foregroundColor(.secondary)
+                        .font(AppFonts.caption)
+                }
+                Button(LocalizedStringKey("settings.account.logout"), role: .destructive) {
+                    Task { await authViewModel.logout() }
+                }
+            case .error(let message):
+                Label {
+                    Text(message)
+                } icon: {
+                    Image(systemName: "exclamationmark.circle.fill")
+                        .foregroundColor(.red)
+                }
+                .font(AppFonts.caption)
+                Button(LocalizedStringKey("settings.account.retry")) {
+                    Task { await authViewModel.login() }
+                }
+            }
+        }
+    }
 
     private var appearanceSection: some View {
         Section(LocalizedStringKey("settings.section.appearance")) {

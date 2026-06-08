@@ -30,6 +30,6 @@ class AuthService: AuthServiceProtocol {
     }
 
     func authorizationURL(for requestToken: String) -> URL {
-        URL(string: "\(authorizationBaseURL)\(requestToken)")!
+        URL(string: "\(authorizationBaseURL)\(requestToken)?redirect_to=neugelbtest://auth")!
     }
 }

@@ -22,7 +22,7 @@ The project is structured around the following key technical decisions:
 
 ## 1. Networking Library
 
-A lightweight networking library handles all API communication. It currently supports `GET`, but is designed to be easily extended to other HTTP methods with minimal changes.
+A lightweight networking library handles all API communication. It supports `GET`, `POST`, `PUT`, `PATCH`, and `DELETE`, covering the full range of RESTful operations.
 
 ### Why `async/await`
 

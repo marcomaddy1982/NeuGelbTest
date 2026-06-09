@@ -2,41 +2,30 @@ import Foundation
 import AuthenticationServices
 import Observation
 import UIKit
-import SwiftData
 
-enum AuthState: Equatable {
-    case loggedOut
+enum LoginState: Equatable {
+    case idle
     case loading
-    case loggedIn(sessionId: String)
     case error(String)
 }
 
 @Observable
 @MainActor
-final class AuthViewModel {
-    var state: AuthState
+final class LoginViewModel {
+    var loginState: LoginState = .idle
 
     private let authService: any AuthServiceProtocol
     private let sessionManager: any SessionManagerProtocol
-    private let modelContainer: ModelContainer
     private let anchor = WebAuthAnchor()
     private var activeWebAuthSession: ASWebAuthenticationSession?
 
-    init(
-        authService: any AuthServiceProtocol,
-        sessionManager: any SessionManagerProtocol,
-        modelContainer: ModelContainer
-    ) {
+    init(authService: any AuthServiceProtocol, sessionManager: any SessionManagerProtocol) {
         self.authService = authService
         self.sessionManager = sessionManager
-        self.modelContainer = modelContainer
-        self.state = sessionManager.sessionId.map { .loggedIn(sessionId: $0) } ?? .loggedOut
     }
 
-    // MARK: - Public
-
     func login() async {
-        state = .loading
+        loginState = .loading
         do {
             let token = try await authService.requestToken()
             let url = authService.authorizationURL(for: token.requestToken)
@@ -44,37 +33,16 @@ final class AuthViewModel {
             let approvedToken = try extractRequestToken(from: callbackURL)
             let session = try await authService.createSession(requestToken: approvedToken)
             try sessionManager.save(sessionId: session.sessionId)
-            state = .loggedIn(sessionId: session.sessionId)
+            loginState = .idle
         } catch {
             let nsError = error as NSError
             if nsError.domain == ASWebAuthenticationSessionErrorDomain,
                nsError.code == ASWebAuthenticationSessionError.canceledLogin.rawValue {
-                state = .loggedOut
+                loginState = .idle
             } else {
-                state = .error(error.localizedDescription)
+                loginState = .error(error.localizedDescription)
             }
         }
-    }
-
-    func logout() async {
-        let currentSessionId = sessionManager.sessionId
-        state = .loading
-        if let sessionId = currentSessionId {
-            _ = try? await authService.deleteSession(sessionId: sessionId)
-        }
-        clearPersistentData()
-        try? sessionManager.deleteSession()
-        state = .loggedOut
-    }
-
-    // MARK: - Private
-
-    private func clearPersistentData() {
-        let context = ModelContext(modelContainer)
-        try? context.delete(model: MovieEntity.self)
-        try? context.delete(model: MoviePageMetadata.self)
-        try? context.delete(model: RecentlyViewedMovie.self)
-        try? context.save()
     }
 
     private func performWebAuth(url: URL) async throws -> URL {
@@ -89,7 +57,7 @@ final class AuthViewModel {
                 } else if let callbackURL {
                     continuation.resume(returning: callbackURL)
                 } else {
-                    continuation.resume(throwing: AuthError.invalidCallback)
+                    continuation.resume(throwing: LoginError.invalidCallback)
                 }
             }
             session.presentationContextProvider = anchor
@@ -102,19 +70,19 @@ final class AuthViewModel {
     private func extractRequestToken(from url: URL) throws -> String {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
               let items = components.queryItems else {
-            throw AuthError.invalidCallback
+            throw LoginError.invalidCallback
         }
         let approved = items.first(where: { $0.name == "approved" })?.value
         guard approved == "true" else {
-            throw AuthError.denied
+            throw LoginError.denied
         }
         guard let requestToken = items.first(where: { $0.name == "request_token" })?.value else {
-            throw AuthError.invalidCallback
+            throw LoginError.invalidCallback
         }
         return requestToken
     }
 
-    enum AuthError: LocalizedError {
+    enum LoginError: LocalizedError {
         case invalidCallback
         case denied
 
@@ -126,8 +94,6 @@ final class AuthViewModel {
         }
     }
 }
-
-// MARK: - WebAuthAnchor
 
 private final class WebAuthAnchor: NSObject, ASWebAuthenticationPresentationContextProviding {
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {

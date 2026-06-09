@@ -51,6 +51,7 @@ func setupDependencies() {
 
         let sessionManager = SessionManager()
         DIContainer.shared.register(sessionManager as SessionManagerProtocol)
+        DIContainer.shared.register(sessionManager)
 
         let authService = AuthService()
         DIContainer.shared.register(authService as AuthServiceProtocol)

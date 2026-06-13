@@ -11,6 +11,7 @@ import SwiftUI
 struct SearchView: View {
     @State private var viewModel = SearchViewModelFactory.makeSearchViewModel()
 
+
     var body: some View {
         @Bindable var viewModel = viewModel
         VStack(spacing: 0) {
@@ -21,6 +22,7 @@ struct SearchView: View {
                     title: "search.empty.title",
                     message: "search.empty.subtitle"
                 )
+                .offset(y: LayoutConstants.searchBarOffset)
             case .loading:
                 ProgressView()
                     .frame(maxHeight: .infinity)

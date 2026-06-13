@@ -14,6 +14,7 @@ struct RecentlyViewedView: View {
     @Injected<ModelContainer> var modelContainer: ModelContainer
     
     var body: some View {
+        @Bindable var viewModel = viewModel
         VStack(spacing: 0) {
             switch viewModel.state {
             case .empty:
@@ -35,6 +36,27 @@ struct RecentlyViewedView: View {
         }
         .navigationTitle("recentlyViewed.navigationTitle")
         .modelContext(ModelContext(modelContainer))
+        .toolbar {
+            if case .success = viewModel.state {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(LocalizedStringKey("recentlyViewed.clearHistory")) {
+                        viewModel.requestClearAll()
+                    }
+                    .foregroundColor(.red)
+                }
+            }
+        }
+        .alert(
+            LocalizedStringKey("recentlyViewed.clearHistory.confirmTitle"),
+            isPresented: $viewModel.showClearConfirmation
+        ) {
+            Button(LocalizedStringKey("recentlyViewed.clearHistory.confirmButton"), role: .destructive) {
+                Task { await viewModel.clearAll() }
+            }
+            Button("common.cancel", role: .cancel) {}
+        } message: {
+            Text("recentlyViewed.clearHistory.confirmMessage")
+        }
         .task {
             await viewModel.loadRecentlyViewed()
         }

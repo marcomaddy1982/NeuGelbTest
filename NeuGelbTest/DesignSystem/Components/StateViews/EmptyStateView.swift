@@ -10,15 +10,17 @@ struct EmptyStateView: View {
             Image(systemName: icon)
                 .largeIconStyle()
                 .foregroundColor(.gray)
-            
+
             Text(title)
                 .titleStyle()
-            
+
             Text(message)
                 .font(AppFonts.caption)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
+                .padding(.horizontal)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

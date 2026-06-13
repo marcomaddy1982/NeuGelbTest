@@ -31,7 +31,11 @@ actor MockImageCache: ImageCaching {
         removeAllCallCount += 1
         cache.removeAll()
     }
-    
+
+    func count() -> Int {
+        cache.count
+    }
+
     func prePopulate(with images: [URL: Image]) {
         for (url, image) in images {
             cache[url] = image

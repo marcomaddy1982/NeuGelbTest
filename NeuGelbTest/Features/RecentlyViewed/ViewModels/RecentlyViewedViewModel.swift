@@ -17,12 +17,14 @@ enum RecentlyViewedViewState {
 @Observable
 final class RecentlyViewedViewModel {
     var state: RecentlyViewedViewState = .empty
-    
+    var showClearConfirmation: Bool = false
+
     private let recentlyViewedRepository: RecentlyViewedRepositoryProtocol
-    
+
     init(recentlyViewedRepository: RecentlyViewedRepositoryProtocol) {
         self.recentlyViewedRepository = recentlyViewedRepository
     }
+
     func loadRecentlyViewed() async {
         do {
             let movies = try await recentlyViewedRepository.getRecentlyViewed()
@@ -37,6 +39,19 @@ final class RecentlyViewedViewModel {
             let errorMessage = "Failed to load recently viewed movies: \(error.localizedDescription)"
             self.state = .error(errorMessage)
             print("❌ \(errorMessage)")
+        }
+    }
+
+    func requestClearAll() {
+        showClearConfirmation = true
+    }
+
+    func clearAll() async {
+        do {
+            try await recentlyViewedRepository.clearAll()
+            state = .empty
+        } catch {
+            state = .error("Failed to clear recently viewed: \(error.localizedDescription)")
         }
     }
 }

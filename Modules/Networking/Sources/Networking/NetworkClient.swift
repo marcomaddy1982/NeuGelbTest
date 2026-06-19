@@ -8,17 +8,14 @@ import Observation
 
 @Observable
 public final class NetworkClient: Sendable {
-    private let config: NetworkConfig
     private let session: URLSession
 
-    public init(config: NetworkConfig, session: URLSession = .shared) {
-        self.config = config
+    public init(session: URLSession = .shared) {
         self.session = session
     }
 
     public func fetch<R: NetworkRequest>(_ request: R) async throws -> R.Response {
-        var urlRequest = try request.buildURLRequest()
-        urlRequest.setValue("Bearer \(config.accessToken)", forHTTPHeaderField: "Authorization")
+        let urlRequest = try request.buildURLRequest()
 
         try Task.checkCancellation()
 

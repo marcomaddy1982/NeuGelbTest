@@ -1,23 +1,23 @@
 import Foundation
 import Networking
 
-struct CreateSessionRequest: NetworkRequest, Sendable {
-    typealias Response = AuthSession
+struct CreateListRequest: NetworkRequest, Sendable {
+    typealias Response = KinoList
 
     let baseURL: URL
-    let endpoint: String = "authentication/session/new"
+    let endpoint: String = "v1/lists"
     let method: HTTPMethod = .post
     let headers: [String: String]
     let queryParameters: [String: String]? = nil
     let body: Data?
 
-    init(baseURL: URL, accessToken: String, requestToken: String) {
+    init(baseURL: URL, sessionId: String, name: String) {
         self.baseURL = baseURL
         self.headers = [
             "Accept": "application/json",
             "Content-Type": "application/json",
-            "Authorization": "Bearer \(accessToken)"
+            "Authorization": "Bearer \(sessionId)"
         ]
-        self.body = try? JSONEncoder().encode(["request_token": requestToken])
+        self.body = try? JSONEncoder().encode(["name": name])
     }
 }

@@ -14,11 +14,12 @@ struct MovieListRequest: NetworkRequest, Sendable {
     let baseURL: URL
     let endpoint: String = "discover/movie"
     let method: HTTPMethod = .get
-    let headers: [String: String] = ["Accept": "application/json"]
+    let headers: [String: String]
     let queryParameters: [String: String]?
-    
-    init(baseURL: URL, page: Int = 1) {
+
+    init(baseURL: URL, accessToken: String, page: Int = 1) {
         self.baseURL = baseURL
+        self.headers = ["Accept": "application/json", "Authorization": "Bearer \(accessToken)"]
         self.queryParameters = [
             "page": String(page),
             "include_adult": "false",

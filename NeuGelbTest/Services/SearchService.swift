@@ -23,6 +23,7 @@ class SearchService: SearchServiceProtocol {
     func searchMovies(query: String, page: Int) async throws -> MovieListResponse {
         let request = SearchMovieRequest(
             baseURL: networkConfig.baseURL,
+            accessToken: networkConfig.accessToken,
             query: query,
             page: page
         )

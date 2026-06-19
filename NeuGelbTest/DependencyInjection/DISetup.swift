@@ -13,9 +13,12 @@ func setupDependencies() {
     do {
         let config = try NetworkConfig()
         DIContainer.shared.register(config)
-        
-        let networkClient = NetworkClient(config: config)
+
+        let networkClient = NetworkClient()
         DIContainer.shared.register(networkClient)
+
+        let kinoAPIConfig = KinoAPIConfig()
+        DIContainer.shared.register(kinoAPIConfig)
         
         let movieService = MovieService()
         DIContainer.shared.register(movieService as MovieServiceProtocol)

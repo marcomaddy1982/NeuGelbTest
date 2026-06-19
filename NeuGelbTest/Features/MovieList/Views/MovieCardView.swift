@@ -97,7 +97,7 @@ struct MovieCardView: View {
     )
 
     if let config = try? NetworkConfig() {
-        let networkClient = NetworkClient(config: config)
+        let networkClient = NetworkClient()
         let imageService = ImageService(networkClient: networkClient, imageBaseURL: config.imageBaseURL, cache: ImageCache())
         let viewModel = MovieCardViewModel(movie: movie, imageService: imageService)
 

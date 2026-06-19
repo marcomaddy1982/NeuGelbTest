@@ -14,11 +14,12 @@ struct MovieDetailRequest: NetworkRequest, Sendable {
     let baseURL: URL
     let endpoint: String
     let method: HTTPMethod = .get
-    let headers: [String: String] = ["Accept": "application/json"]
+    let headers: [String: String]
     let queryParameters: [String: String]? = nil
-    
-    init(baseURL: URL, movieId: Int) {
+
+    init(baseURL: URL, accessToken: String, movieId: Int) {
         self.baseURL = baseURL
+        self.headers = ["Accept": "application/json", "Authorization": "Bearer \(accessToken)"]
         self.endpoint = "movie/\(movieId)"
     }
 }

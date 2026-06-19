@@ -50,7 +50,7 @@ struct SearchResultsGridView: View {
 
 #Preview {
     if let config = try? NetworkConfig() {
-        let networkClient = NetworkClient(config: config)
+        let networkClient = NetworkClient()
         let imageService = ImageService(networkClient: networkClient, imageBaseURL: config.imageBaseURL, cache: ImageCache())
 
         NavigationStack {

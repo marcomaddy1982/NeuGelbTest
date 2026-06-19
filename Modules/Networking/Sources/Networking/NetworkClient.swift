@@ -7,7 +7,7 @@ import Foundation
 import Observation
 
 @Observable
-public final class NetworkClient: Sendable {
+public final class NetworkClient: NetworkClientProtocol, Sendable {
     private let session: URLSession
 
     public init(session: URLSession = .shared) {

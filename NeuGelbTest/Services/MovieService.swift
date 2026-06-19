@@ -15,7 +15,7 @@ protocol MovieServiceProtocol {
 }
 
 class MovieService: MovieServiceProtocol {
-    @Injected<NetworkClient> var networkClient: NetworkClient
+    @Injected<NetworkClientProtocol> var networkClient: any NetworkClientProtocol
     @Injected<NetworkConfig> var networkConfig: NetworkConfig
     
     func fetchMovies(page: Int = 1) async throws -> MovieListResponse {

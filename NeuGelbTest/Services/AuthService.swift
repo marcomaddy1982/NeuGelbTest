@@ -11,7 +11,7 @@ protocol AuthServiceProtocol {
 }
 
 class AuthService: AuthServiceProtocol {
-    @Injected<NetworkClient> var networkClient: NetworkClient
+    @Injected<NetworkClientProtocol> var networkClient: any NetworkClientProtocol
     @Injected<NetworkConfig> var networkConfig: NetworkConfig
 
     func requestToken() async throws -> RequestToken {

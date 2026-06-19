@@ -1,0 +1,138 @@
+import Testing
+import Foundation
+import Networking
+@testable import NeuGelbTest
+
+@Suite("ListsService Tests")
+@MainActor
+struct ListsServiceTests {
+
+    private func makeSUT(sessionId: String? = "test-session-id") -> (ListsService, MockNetworkClient, MockSessionManager) {
+        let mockNetworkClient = MockNetworkClient()
+        let mockSessionManager = MockSessionManager()
+        mockSessionManager.sessionId = sessionId
+
+        DIContainer.shared.reset()
+        DIContainer.shared.register(mockNetworkClient as NetworkClientProtocol)
+        DIContainer.shared.register(KinoAPIConfig())
+        DIContainer.shared.register(mockSessionManager as SessionManagerProtocol)
+
+        return (ListsService(), mockNetworkClient, mockSessionManager)
+    }
+
+    // MARK: - fetchLists
+
+    @Test("fetchLists returns decoded lists")
+    func testFetchListsReturnsLists() async throws {
+        let (sut, mockClient, _) = makeSUT()
+        let json = #"[{"id":1,"name":"Watchlist","isFavourite":false,"createdAt":"2026-01-01T00:00:00.000Z"}]"#.data(using: .utf8)!
+        mockClient.simulateSuccess(with: json)
+
+        let lists = try await sut.fetchLists()
+
+        #expect(lists.count == 1)
+        #expect(lists.first?.name == "Watchlist")
+    }
+
+    @Test("fetchLists throws when unauthenticated")
+    func testFetchListsThrowsWhenUnauthenticated() async {
+        let (sut, _, _) = makeSUT(sessionId: nil)
+
+        await #expect(throws: ListsServiceError.unauthenticated) {
+            try await sut.fetchLists()
+        }
+    }
+
+    @Test("fetchLists throws on network error")
+    func testFetchListsThrowsOnNetworkError() async {
+        let (sut, mockClient, _) = makeSUT()
+        mockClient.simulateFailure(with: .noData)
+
+        await #expect(throws: (any Error).self) {
+            try await sut.fetchLists()
+        }
+    }
+
+    // MARK: - createList
+
+    @Test("createList returns new list")
+    func testCreateListReturnsNewList() async throws {
+        let (sut, mockClient, _) = makeSUT()
+        let json = #"{"id":2,"name":"Horror","isFavourite":false,"createdAt":"2026-01-01T00:00:00.000Z"}"#.data(using: .utf8)!
+        mockClient.simulateSuccess(with: json)
+
+        let list = try await sut.createList(name: "Horror")
+
+        #expect(list.name == "Horror")
+        #expect(list.isFavourite == false)
+    }
+
+    @Test("createList throws when unauthenticated")
+    func testCreateListThrowsWhenUnauthenticated() async {
+        let (sut, _, _) = makeSUT(sessionId: nil)
+
+        await #expect(throws: ListsServiceError.unauthenticated) {
+            try await sut.createList(name: "Horror")
+        }
+    }
+
+    // MARK: - deleteList
+
+    @Test("deleteList succeeds without error")
+    func testDeleteListSucceeds() async throws {
+        let (sut, mockClient, _) = makeSUT()
+        mockClient.simulateSuccess(with: "{}".data(using: .utf8)!)
+
+        try await sut.deleteList(id: 1)
+    }
+
+    @Test("deleteList throws when unauthenticated")
+    func testDeleteListThrowsWhenUnauthenticated() async {
+        let (sut, _, _) = makeSUT(sessionId: nil)
+
+        await #expect(throws: ListsServiceError.unauthenticated) {
+            try await sut.deleteList(id: 1)
+        }
+    }
+
+    // MARK: - addItem
+
+    @Test("addItem returns list item")
+    func testAddItemReturnsListItem() async throws {
+        let (sut, mockClient, _) = makeSUT()
+        let json = #"{"id":10,"tmdbMovieId":550,"createdAt":"2026-01-01T00:00:00.000Z"}"#.data(using: .utf8)!
+        mockClient.simulateSuccess(with: json)
+
+        let item = try await sut.addItem(listId: 1, tmdbMovieId: 550)
+
+        #expect(item.tmdbMovieId == 550)
+    }
+
+    @Test("addItem throws when unauthenticated")
+    func testAddItemThrowsWhenUnauthenticated() async {
+        let (sut, _, _) = makeSUT(sessionId: nil)
+
+        await #expect(throws: ListsServiceError.unauthenticated) {
+            try await sut.addItem(listId: 1, tmdbMovieId: 550)
+        }
+    }
+
+    // MARK: - removeItem
+
+    @Test("removeItem succeeds without error")
+    func testRemoveItemSucceeds() async throws {
+        let (sut, mockClient, _) = makeSUT()
+        mockClient.simulateSuccess(with: "{}".data(using: .utf8)!)
+
+        try await sut.removeItem(listId: 1, tmdbMovieId: 550)
+    }
+
+    @Test("removeItem throws when unauthenticated")
+    func testRemoveItemThrowsWhenUnauthenticated() async {
+        let (sut, _, _) = makeSUT(sessionId: nil)
+
+        await #expect(throws: ListsServiceError.unauthenticated) {
+            try await sut.removeItem(listId: 1, tmdbMovieId: 550)
+        }
+    }
+}

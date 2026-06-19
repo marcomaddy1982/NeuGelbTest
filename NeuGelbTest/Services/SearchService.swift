@@ -14,7 +14,7 @@ protocol SearchServiceProtocol {
 }
 
 class SearchService: SearchServiceProtocol {
-    @Injected<NetworkClient> var networkClient: NetworkClient
+    @Injected<NetworkClientProtocol> var networkClient: any NetworkClientProtocol
     @Injected<NetworkConfig> var networkConfig: NetworkConfig
 
     private var searchTask: Task<Void, Never>?

@@ -8,7 +8,7 @@
 import Foundation
 import Networking
 
-final class MockNetworkClient: Sendable {
+final class MockNetworkClient: NetworkClientProtocol, Sendable {
     nonisolated(unsafe) var shouldSucceed: Bool = true
     nonisolated(unsafe) var mockResponse: Data?
     nonisolated(unsafe) var error: NetworkError?

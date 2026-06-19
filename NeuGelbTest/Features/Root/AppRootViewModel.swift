@@ -18,7 +18,7 @@ final class AppRootViewModel {
     }
 
     @ObservationIgnored @AppStorage("defaultTab") private var defaultTab: DefaultTab = .discover
-    @ObservationIgnored @Injected<SessionManager> private var sessionManager: SessionManager
+    @ObservationIgnored @Injected<SessionManagerProtocol> private var sessionManager: any SessionManagerProtocol
 
     var isAuthenticated: Bool { sessionManager.sessionId != nil }
     var selectedTab: Tab

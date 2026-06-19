@@ -15,7 +15,7 @@ func setupDependencies() {
         DIContainer.shared.register(config)
 
         let networkClient = NetworkClient()
-        DIContainer.shared.register(networkClient)
+        DIContainer.shared.register(networkClient as NetworkClientProtocol)
 
         let kinoAPIConfig = KinoAPIConfig()
         DIContainer.shared.register(kinoAPIConfig)
@@ -29,7 +29,11 @@ func setupDependencies() {
         let imageCache = ImageCache()
         DIContainer.shared.register(imageCache as ImageCaching)
 
-        let imageService = ImageService(networkClient: networkClient, imageBaseURL: config.imageBaseURL, cache: imageCache)
+        let imageService = ImageService(
+            networkClient: networkClient,
+            imageBaseURL: config.imageBaseURL,
+            cache: imageCache
+        )
         DIContainer.shared.register(imageService as ImageServiceProtocol)
 
         let modelContainer = try PersistenceFactory.createModelContainer()
@@ -54,10 +58,12 @@ func setupDependencies() {
 
         let sessionManager = SessionManager()
         DIContainer.shared.register(sessionManager as SessionManagerProtocol)
-        DIContainer.shared.register(sessionManager)
 
         let authService = AuthService()
         DIContainer.shared.register(authService as AuthServiceProtocol)
+
+        let listsService = ListsService()
+        DIContainer.shared.register(listsService as ListsServiceProtocol)
     } catch {
         print("❌ Failed to setup dependencies: \(error)")
     }

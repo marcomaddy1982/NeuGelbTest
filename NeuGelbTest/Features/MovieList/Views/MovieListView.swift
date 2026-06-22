@@ -28,12 +28,24 @@ struct MovieListView: View {
         }
         .navigationTitle("movieList.navigationTitle")
         .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    viewModel.showLists = true
+                } label: {
+                    Image(systemName: "heart")
+                }
+            }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
                     viewModel.showSettings = true
                 } label: {
                     Image(systemName: "gearshape")
                 }
+            }
+        }
+        .sheet(isPresented: $viewModel.showLists) {
+            NavigationStack {
+                ListsView()
             }
         }
         .sheet(isPresented: $viewModel.showSettings) {

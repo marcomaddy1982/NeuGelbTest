@@ -22,6 +22,11 @@
 			</array>
 		</dict>
 	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
 	<key>baseURL</key>
 	<string>$(BASE_URL)</string>
 	<key>accessToken</key>

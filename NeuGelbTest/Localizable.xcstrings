@@ -65,6 +65,9 @@
         }
       }
     },
+    "common.delete" : {
+
+    },
     "common.error.retry" : {
       "localizations" : {
         "en" : {
@@ -567,6 +570,54 @@
         }
       }
     },
+    "lists.empty.subtitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create a list to organise your movies"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crea una lista per organizzare i tuoi film"
+          }
+        }
+      }
+    },
+    "lists.empty.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No lists yet"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessuna lista"
+          }
+        }
+      }
+    },
+    "lists.navigationTitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lists"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liste"
+          }
+        }
+      }
+    },
     "movieList.navigationTitle" : {
       "localizations" : {
         "en" : {
@@ -951,54 +1002,6 @@
         }
       }
     },
-    "settings.cache.empty" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Empty"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vuota"
-          }
-        }
-      }
-    },
-    "settings.cache.itemCount" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%d images"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%d immagini"
-          }
-        }
-      }
-    },
-    "settings.cache.itemCountLabel" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cached images"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Immagini in cache"
-          }
-        }
-      }
-    },
     "settings.cache.cleared" : {
       "localizations" : {
         "en" : {
@@ -1079,6 +1082,54 @@
         }
       }
     },
+    "settings.cache.empty" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empty"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vuota"
+          }
+        }
+      }
+    },
+    "settings.cache.itemCount" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d images"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d immagini"
+          }
+        }
+      }
+    },
+    "settings.cache.itemCountLabel" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cached images"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Immagini in cache"
+          }
+        }
+      }
+    },
     "settings.navigationTitle" : {
       "localizations" : {
         "en" : {
@@ -1143,22 +1194,6 @@
         }
       }
     },
-    "settings.section.preferences" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Preferences"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Preferenze"
-          }
-        }
-      }
-    },
     "settings.section.cache" : {
       "localizations" : {
         "en" : {
@@ -1187,6 +1222,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tab Predefinito"
+          }
+        }
+      }
+    },
+    "settings.section.preferences" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preferences"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preferenze"
           }
         }
       }

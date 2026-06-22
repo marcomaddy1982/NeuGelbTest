@@ -32,7 +32,7 @@ struct MovieListView: View {
                 Button {
                     viewModel.showLists = true
                 } label: {
-                    Image(systemName: "heart")
+                    Image(systemName: "list.bullet")
                 }
             }
             ToolbarItem(placement: .navigationBarTrailing) {

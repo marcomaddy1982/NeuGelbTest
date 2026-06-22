@@ -79,9 +79,8 @@ final class SearchViewModel {
         // Pipeline 1: Handle valid searches (debounced)
         searchQuerySubject
             .filter { !$0.isEmpty }
-            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.global(qos: .userInitiated))
+            .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
             .removeDuplicates()
-            .receive(on: DispatchQueue.main)
             .sink { [weak self] query in
                 self?.performSearch(query: query)
             }
@@ -90,7 +89,7 @@ final class SearchViewModel {
         // Pipeline 2: Handle empty queries (user taps X button)
         searchQuerySubject
             .filter { $0.isEmpty }
-            .receive(on: DispatchQueue.main)
+            .receive(on: RunLoop.main)
             .sink { [weak self] _ in
                 self?.clearSearchState()
             }

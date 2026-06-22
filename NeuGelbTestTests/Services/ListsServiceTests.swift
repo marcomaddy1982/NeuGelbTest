@@ -25,7 +25,7 @@ struct ListsServiceTests {
     @Test("fetchLists returns decoded lists")
     func testFetchListsReturnsLists() async throws {
         let (sut, mockClient, _) = makeSUT()
-        let json = #"[{"id":1,"name":"Watchlist","isFavourite":false,"createdAt":"2026-01-01T00:00:00.000Z"}]"#.data(using: .utf8)!
+        let json = #"[{"id":1,"name":"Watchlist","isFavourite":false,"createdAt":"2026-01-01T00:00:00.000Z","itemCount":0}]"#.data(using: .utf8)!
         mockClient.simulateSuccess(with: json)
 
         let lists = try await sut.fetchLists()
@@ -58,7 +58,7 @@ struct ListsServiceTests {
     @Test("createList returns new list")
     func testCreateListReturnsNewList() async throws {
         let (sut, mockClient, _) = makeSUT()
-        let json = #"{"id":2,"name":"Horror","isFavourite":false,"createdAt":"2026-01-01T00:00:00.000Z"}"#.data(using: .utf8)!
+        let json = #"{"id":2,"name":"Horror","isFavourite":false,"createdAt":"2026-01-01T00:00:00.000Z","itemCount":0}"#.data(using: .utf8)!
         mockClient.simulateSuccess(with: json)
 
         let list = try await sut.createList(name: "Horror")

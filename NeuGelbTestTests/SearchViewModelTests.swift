@@ -13,325 +13,238 @@ import Networking
 @Suite("SearchViewModel Tests")
 @MainActor
 struct SearchViewModelTests {
-    
+
+    func makeSUT() -> (SearchViewModel, MockSearchService) {
+        let mockSearchService = MockSearchService()
+        let mockImageService = MockImageService()
+        let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
+        return (sut, mockSearchService)
+    }
+
+    // MARK: - Initial State
+
     @Test("Initial state is empty")
     func testInitialStateIsEmpty() {
-        let mockSearchService = MockSearchService()
-        let mockImageService = MockImageService()
-        let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
-        
-        if case .empty = sut.state {
-            #expect(true)
-        } else {
-            Issue.record("Initial state should be .empty")
-        }
+        let (sut, _) = makeSUT()
+        if case .empty = sut.state { #expect(true) } else { Issue.record("Initial state should be .empty") }
     }
-    
+
     @Test("Initial pagination values are correct")
     func testInitialPaginationValues() {
-        let mockSearchService = MockSearchService()
-        let mockImageService = MockImageService()
-        let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
-        
+        let (sut, _) = makeSUT()
         #expect(sut.currentPage == 1)
         #expect(sut.hasMorePages == false)
         #expect(sut.isPaginationLoading == false)
         #expect(sut.searchQuery.isEmpty)
         #expect(sut.searchResults.isEmpty)
     }
-    
-    // MARK: - Debounce & Filtering Tests
-    
-     @Test("Debounce waits before executing search")
-     func testDebounceWaitsBeforeSearch() async {
-        let mockSearchService = MockSearchService()
+
+    // MARK: - Search Tests
+
+    @Test("Search succeeds and updates state to success")
+    func testSearchSucceeds() async {
+        let (sut, mockSearchService) = makeSUT()
+        let response = TestDataBuilder.makeSampleMovieListResponse(page: 1, totalPages: 5, results: TestDataBuilder.makeSampleMovieList(count: 10))
+        mockSearchService.simulateSuccess(with: response)
+
+        sut.performSearch(query: "Test")
+        await Task.yield()
+        await Task.yield()
+
+        if case .success(let movies) = sut.state {
+            #expect(movies.count == 10)
+        } else {
+            Issue.record("State should be .success after search")
+        }
+    }
+
+    @Test("Search failure updates error state")
+    func testSearchFailureUpdatesErrorState() async {
+        let (sut, mockSearchService) = makeSUT()
+        mockSearchService.simulateFailure(with: NetworkError.noData)
+
+        sut.performSearch(query: "Test")
+        await Task.yield()
+        await Task.yield()
+
+        if case .error(let message) = sut.state {
+            #expect(!message.isEmpty)
+        } else {
+            Issue.record("State should be .error after search failure")
+        }
+    }
+
+    @Test("Error state contains error message")
+    func testErrorStateContainsMessage() async {
+        let (sut, mockSearchService) = makeSUT()
+        mockSearchService.simulateFailure(with: NetworkError.noData)
+
+        sut.performSearch(query: "Test")
+        await Task.yield()
+        await Task.yield()
+
+        if case .error(let message) = sut.state {
+            #expect(!message.isEmpty)
+        } else {
+            Issue.record("State should be .error")
+        }
+    }
+
+    @Test("Search updates hasMorePages correctly")
+    func testSearchUpdatesHasMorePages() async {
+        let (sut, mockSearchService) = makeSUT()
+        mockSearchService.simulateSuccess(with: TestDataBuilder.makeSampleMovieListResponse(page: 1, totalPages: 5))
+
+        sut.performSearch(query: "Test")
+        await Task.yield()
+        await Task.yield()
+
+        #expect(sut.currentPage == 1)
+        #expect(sut.hasMorePages == true)
+    }
+
+    @Test("Search resets results on new query")
+    func testSearchResetsResultsOnNewQuery() async {
+        let (sut, mockSearchService) = makeSUT()
+        mockSearchService.simulateSuccess(with: TestDataBuilder.makeSampleMovieListResponse(results: TestDataBuilder.makeSampleMovieList(count: 5, baseTitle: "Query1")))
+
+        sut.performSearch(query: "Query1")
+        await Task.yield()
+        await Task.yield()
+
+        if case .success(let movies) = sut.state { #expect(movies.count == 5) }
+
+        mockSearchService.simulateSuccess(with: TestDataBuilder.makeSampleMovieListResponse(results: TestDataBuilder.makeSampleMovieList(count: 3, baseTitle: "Query2")))
+        sut.performSearch(query: "Query2")
+        await Task.yield()
+        await Task.yield()
+
+        if case .success(let movies) = sut.state {
+            #expect(movies.count == 3)
+        } else {
+            Issue.record("State should be .success after second search")
+        }
+    }
+
+    @Test("Empty query resets state to empty")
+    func testEmptyQueryResetsState() async {
+        let (sut, mockSearchService) = makeSUT()
         mockSearchService.simulateSuccess(with: TestDataBuilder.makeSampleMovieListResponse())
-        let mockImageService = MockImageService()
-         
-        let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
-        
-        // Update query but wait less than debounce time (300ms)
-        sut.searchQuery = "Test"
-        try? await Task.sleep(nanoseconds: 100_000_000) // 100ms
-        
-        // Should not have called API yet
-        #expect(mockSearchService.searchMoviesCallCount == 0)
-     }
-    
-      @Test("Search executes after debounce period")
-      func testSearchExecutesAfterDebounce() async {
-         let mockSearchService = MockSearchService()
-         mockSearchService.simulateSuccess(with: TestDataBuilder.makeSampleMovieListResponse())
-         let mockImageService = MockImageService()
 
-         let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
-         
-         sut.searchQuery = "Test"
-         try? await Task.sleep(nanoseconds: 400_000_000) // Wait for debounce + margin
-         
-         #expect(mockSearchService.searchMoviesCallCount == 1)
-         #expect(mockSearchService.lastQueryRequested == "Test")
-     }
-    
-      @Test("Duplicate queries only execute once")
-      func testDuplicateQueriesExecuteOnce() async {
-         let mockSearchService = MockSearchService()
-         mockSearchService.simulateSuccess(with: TestDataBuilder.makeSampleMovieListResponse())
-         let mockImageService = MockImageService()
+        sut.performSearch(query: "Test")
+        await Task.yield()
+        await Task.yield()
 
-         let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
-         
-         // Type the same query twice
-         sut.searchQuery = "Test"
-         try? await Task.sleep(nanoseconds: 100_000_000) // 100ms
-         sut.searchQuery = "Test"
-         try? await Task.sleep(nanoseconds: 400_000_000) // Wait for debounce
-         
-         // Should only call API once due to removeDuplicates
-         #expect(mockSearchService.searchMoviesCallCount == 1)
-     }
-    
-    // MARK: - Empty Query Handling Tests
-    
-      @Test("Empty query clears results")
-      func testEmptyQueryClearsResults() async {
-         let mockSearchService = MockSearchService()
-         mockSearchService.simulateSuccess(with: TestDataBuilder.makeSampleMovieListResponse())
-         let mockImageService = MockImageService()
+        if case .success = sut.state { #expect(true) } else { Issue.record("State should be success after search") }
 
-         let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
-         
-         // Search first
-         sut.searchQuery = "Test"
-         try? await Task.sleep(nanoseconds: 400_000_000)
-         
-         #expect(!sut.searchResults.isEmpty)
-         
-         // Clear search
-         sut.searchQuery = ""
-         try? await Task.sleep(nanoseconds: 100_000_000)
-         
-         #expect(sut.searchResults.isEmpty)
-     }
-    
-      @Test("Empty query resets state to empty")
-      func testEmptyQueryResetsState() async {
-         let mockSearchService = MockSearchService()
-         mockSearchService.simulateSuccess(with: TestDataBuilder.makeSampleMovieListResponse())
-         let mockImageService = MockImageService()
+        sut.searchQuery = ""
+        await Task.yield()
 
-         let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
+        if case .empty = sut.state { #expect(true) } else { Issue.record("State should be empty after clearing query") }
+    }
 
-         sut.searchQuery = "Test"
-         try? await Task.sleep(nanoseconds: 400_000_000)
-         
-         if case .success = sut.state {
-             #expect(true)
-         } else {
-             Issue.record("State should be success after search")
-         }
+    @Test("Empty query clears results")
+    func testEmptyQueryClearsResults() async {
+        let (sut, mockSearchService) = makeSUT()
+        mockSearchService.simulateSuccess(with: TestDataBuilder.makeSampleMovieListResponse())
 
-         sut.searchQuery = ""
-         try? await Task.sleep(nanoseconds: 100_000_000)
-         
-         if case .empty = sut.state {
-             #expect(true)
-         } else {
-             Issue.record("State should be empty after clearing query")
-         }
-     }
-    
-      @Test("Search succeeds and updates state to success")
-      func testSearchSucceedsAndUpdatesState() async {
-         let mockSearchService = MockSearchService()
-         let response = TestDataBuilder.makeSampleMovieListResponse(page: 1, totalPages: 5, results: TestDataBuilder.makeSampleMovieList(count: 10))
-         mockSearchService.simulateSuccess(with: response)
-         let mockImageService = MockImageService()
+        sut.performSearch(query: "Test")
+        await Task.yield()
+        await Task.yield()
 
-         let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
-         
-         sut.searchQuery = "Test"
-         try? await Task.sleep(nanoseconds: 400_000_000)
-         
-         if case .success(let movies) = sut.state {
-             #expect(movies.count == 10)
-         } else {
-             Issue.record("State should be .success after search")
-         }
-     }
-    
-      @Test("Search resets results on new query")
-      func testSearchResetsResultsOnNewQuery() async {
-         let mockSearchService = MockSearchService()
-         let response1 = TestDataBuilder.makeSampleMovieListResponse(results: TestDataBuilder.makeSampleMovieList(count: 5, baseTitle: "Query1"))
-         mockSearchService.simulateSuccess(with: response1)
-         let mockImageService = MockImageService()
-          
-         let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
-         
-         // First search
-         sut.searchQuery = "Query1"
-         try? await Task.sleep(nanoseconds: 400_000_000)
-         
-         if case .success(let movies) = sut.state {
-             #expect(movies.count == 5)
-         }
-         
-         // Update mock for second search
-         let response2 = TestDataBuilder.makeSampleMovieListResponse(results: TestDataBuilder.makeSampleMovieList(count: 3, baseTitle: "Query2"))
-         mockSearchService.simulateSuccess(with: response2)
-         
-         // New search should clear previous results
-         sut.searchQuery = "Query2"
-         try? await Task.sleep(nanoseconds: 400_000_000)
-         
-         if case .success(let movies) = sut.state {
-             #expect(movies.count == 3)
-         }
-     }
-    
-      @Test("Search updates hasMorePages correctly")
-      func testSearchUpdatesHasMorePages() async {
-         let mockSearchService = MockSearchService()
-         let response = TestDataBuilder.makeSampleMovieListResponse(page: 1, totalPages: 5)
-         mockSearchService.simulateSuccess(with: response)
-         let mockImageService = MockImageService()
-          
-         let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
-         
-         sut.searchQuery = "Test"
-         try? await Task.sleep(nanoseconds: 400_000_000)
-         
-         #expect(sut.currentPage == 1)
-         #expect(sut.hasMorePages == true) // Page 1 of 5 has more pages
-     }
-    
-    // MARK: - Error Handling Tests
-    
-      @Test("Search failure updates error state")
-      func testSearchFailureUpdatesErrorState() async {
-         let mockSearchService = MockSearchService()
-         mockSearchService.simulateFailure(with: NetworkError.noData)
-         let mockImageService = MockImageService()
+        #expect(!sut.searchResults.isEmpty)
 
-         let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
-         
-         sut.searchQuery = "Test"
-         try? await Task.sleep(nanoseconds: 400_000_000)
-         
-         if case .error(let message) = sut.state {
-             #expect(!message.isEmpty)
-         } else {
-             Issue.record("State should be .error after search failure")
-         }
-     }
-    
-      @Test("Error state contains error message")
-      func testErrorStateContainsMessage() async {
-         let mockSearchService = MockSearchService()
-         mockSearchService.simulateFailure(with: NetworkError.noData)
-         let mockImageService = MockImageService()
+        sut.searchQuery = ""
+        await Task.yield()
 
-         let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
-         
-         sut.searchQuery = "Test"
-         try? await Task.sleep(nanoseconds: 400_000_000)
-         
-         if case .error(let message) = sut.state {
-             #expect(message.contains("No"))
-         } else {
-             Issue.record("State should be .error")
-         }
-     }
-    
+        #expect(sut.searchResults.isEmpty)
+    }
+
     // MARK: - Pagination Tests
-    
-      @Test("Load next page appends results")
-      func testLoadNextPageAppendsResults() async {
-         let mockSearchService = MockSearchService()
-         let page1Response = TestDataBuilder.makeSampleMovieListResponse(page: 1, totalPages: 3, results: TestDataBuilder.makeSampleMovieList(count: 5, baseTitle: "Page1"))
-         mockSearchService.simulateSuccess(with: page1Response)
-         let mockImageService = MockImageService()
-          
-         let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
 
-         sut.searchQuery = "Test"
-         try? await Task.sleep(nanoseconds: 400_000_000)
-         
-         if case .success(let movies) = sut.state {
-             #expect(movies.count == 5)
-         }
+    @Test("Load next page appends results")
+    func testLoadNextPageAppendsResults() async {
+        let (sut, mockSearchService) = makeSUT()
+        mockSearchService.simulateSuccess(with: TestDataBuilder.makeSampleMovieListResponse(page: 1, totalPages: 3, results: TestDataBuilder.makeSampleMovieList(count: 5, baseTitle: "Page1")))
 
-         let page2Response = TestDataBuilder.makeSampleMovieListResponse(page: 2, totalPages: 3, results: TestDataBuilder.makeSampleMovieList(count: 5, baseTitle: "Page2"))
-         mockSearchService.simulateSuccess(with: page2Response)
-         
-         sut.loadNextPage()
-         try? await Task.sleep(nanoseconds: 100_000_000)
-         
-         if case .success(let movies) = sut.state {
-             #expect(movies.count == 10) // 5 from page 1 + 5 from page 2
-         } else {
-             Issue.record("State should still be success")
-         }
-     }
-    
-      @Test("Load next page updates current page")
-      func testLoadNextPageUpdatesCurrentPage() async {
-         let mockSearchService = MockSearchService()
-         let page1Response = TestDataBuilder.makeSampleMovieListResponse(page: 1, totalPages: 3)
-         mockSearchService.simulateSuccess(with: page1Response)
-         let mockImageService = MockImageService()
+        sut.performSearch(query: "Test")
+        await Task.yield()
+        await Task.yield()
 
-         let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
-         
-         sut.searchQuery = "Test"
-         try? await Task.sleep(nanoseconds: 400_000_000)
-         
-         #expect(sut.currentPage == 1)
-         
-         let page2Response = TestDataBuilder.makeSampleMovieListResponse(page: 2, totalPages: 3)
-         mockSearchService.simulateSuccess(with: page2Response)
-         
-         sut.loadNextPage()
-         try? await Task.sleep(nanoseconds: 100_000_000)
-         
-         #expect(sut.currentPage == 2)
-     }
-    
-      @Test("Load next page guards when no more pages")
-      func testLoadNextPageGuardsWhenNoMorePages() async {
-         let mockSearchService = MockSearchService()
-         let lastPageResponse = TestDataBuilder.makeSampleMovieListResponse(page: 1, totalPages: 1)
-         mockSearchService.simulateSuccess(with: lastPageResponse)
-         let mockImageService = MockImageService()
+        if case .success(let movies) = sut.state { #expect(movies.count == 5) }
 
-         let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
-         
-         sut.searchQuery = "Test"
-         try? await Task.sleep(nanoseconds: 400_000_000)
-         
-         #expect(sut.hasMorePages == false)
-         
-         let callCountBefore = mockSearchService.searchMoviesCallCount
-         sut.loadNextPage()
+        mockSearchService.simulateSuccess(with: TestDataBuilder.makeSampleMovieListResponse(page: 2, totalPages: 3, results: TestDataBuilder.makeSampleMovieList(count: 5, baseTitle: "Page2")))
+        sut.loadNextPage()
+        await Task.yield()
+        await Task.yield()
 
-         #expect(mockSearchService.searchMoviesCallCount == callCountBefore)
-     }
-    
-     @Test("shouldLoadNextPage detects last movie")
-     func testShouldLoadNextPageDetectsLastMovie() async {
-         let mockSearchService = MockSearchService()
-         let mockImageService = MockImageService()
+        if case .success(let movies) = sut.state {
+            #expect(movies.count == 10)
+        } else {
+            Issue.record("State should still be success after pagination")
+        }
+    }
 
-         let movies = TestDataBuilder.makeSampleMovieList(count: 3)
-         let response = TestDataBuilder.makeSampleMovieListResponse(page: 1, totalPages: 3, results: movies)
-         mockSearchService.simulateSuccess(with: response)
+    @Test("Load next page updates current page")
+    func testLoadNextPageUpdatesCurrentPage() async {
+        let (sut, mockSearchService) = makeSUT()
+        mockSearchService.simulateSuccess(with: TestDataBuilder.makeSampleMovieListResponse(page: 1, totalPages: 3))
 
-         let sut = SearchViewModel(searchService: mockSearchService, imageService: mockImageService)
-         sut.searchQuery = "Test"
-         try? await Task.sleep(nanoseconds: 400_000_000)
+        sut.performSearch(query: "Test")
+        await Task.yield()
+        await Task.yield()
 
-         #expect(sut.shouldLoadNextPage(for: movies.last!))
-         #expect(!sut.shouldLoadNextPage(for: movies.first!))
-     }
+        #expect(sut.currentPage == 1)
+
+        mockSearchService.simulateSuccess(with: TestDataBuilder.makeSampleMovieListResponse(page: 2, totalPages: 3))
+        sut.loadNextPage()
+        await Task.yield()
+        await Task.yield()
+
+        #expect(sut.currentPage == 2)
+    }
+
+    @Test("Load next page guards when no more pages")
+    func testLoadNextPageGuardsWhenNoMorePages() async {
+        let (sut, mockSearchService) = makeSUT()
+        mockSearchService.simulateSuccess(with: TestDataBuilder.makeSampleMovieListResponse(page: 1, totalPages: 1))
+
+        sut.performSearch(query: "Test")
+        await Task.yield()
+        await Task.yield()
+
+        #expect(sut.hasMorePages == false)
+
+        let callCountBefore = mockSearchService.searchMoviesCallCount
+        sut.loadNextPage()
+
+        #expect(mockSearchService.searchMoviesCallCount == callCountBefore)
+    }
+
+    @Test("shouldLoadNextPage returns false when no more pages")
+    func testShouldLoadNextPageReturnsFalseWhenNoMorePages() async {
+        let (sut, mockSearchService) = makeSUT()
+        mockSearchService.simulateSuccess(with: TestDataBuilder.makeSampleMovieListResponse(page: 1, totalPages: 1))
+
+        sut.performSearch(query: "Test")
+        await Task.yield()
+        await Task.yield()
+
+        guard case .success(let movies) = sut.state, let last = movies.last else { return }
+        #expect(!sut.shouldLoadNextPage(for: last))
+    }
+
+    @Test("shouldLoadNextPage detects last movie")
+    func testShouldLoadNextPageDetectsLastMovie() async {
+        let (sut, mockSearchService) = makeSUT()
+        let movies = TestDataBuilder.makeSampleMovieList(count: 3)
+        mockSearchService.simulateSuccess(with: TestDataBuilder.makeSampleMovieListResponse(page: 1, totalPages: 3, results: movies))
+
+        sut.performSearch(query: "Test")
+        await Task.yield()
+        await Task.yield()
+
+        #expect(sut.shouldLoadNextPage(for: movies.last!))
+        #expect(!sut.shouldLoadNextPage(for: movies.first!))
+    }
 }

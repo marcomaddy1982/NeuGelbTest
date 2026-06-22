@@ -5,4 +5,5 @@ nonisolated struct KinoList: Decodable, Sendable, Identifiable {
     let name: String
     let isFavourite: Bool
     let createdAt: String
+    let itemCount: Int
 }

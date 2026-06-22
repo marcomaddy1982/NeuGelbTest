@@ -11,6 +11,8 @@ protocol ListsServiceProtocol {
     func deleteList(id: Int) async throws
     func addItem(listId: Int, tmdbMovieId: Int) async throws -> KinoListItem
     func removeItem(listId: Int, tmdbMovieId: Int) async throws
+    func checkFavourite(tmdbMovieId: Int) async throws -> Bool
+    func toggleFavourite(tmdbMovieId: Int) async throws -> Bool
 }
 
 class ListsService: ListsServiceProtocol {
@@ -46,5 +48,19 @@ class ListsService: ListsServiceProtocol {
         guard let sessionId = sessionManager.sessionId else { throw ListsServiceError.unauthenticated }
         let request = RemoveListItemRequest(baseURL: kinoAPIConfig.baseURL, sessionId: sessionId, listId: listId, tmdbMovieId: tmdbMovieId)
         _ = try await networkClient.fetch(request)
+    }
+
+    func checkFavourite(tmdbMovieId: Int) async throws -> Bool {
+        guard let sessionId = sessionManager.sessionId else { throw ListsServiceError.unauthenticated }
+        let request = CheckFavouriteRequest(baseURL: kinoAPIConfig.baseURL, sessionId: sessionId, tmdbMovieId: tmdbMovieId)
+        let response = try await networkClient.fetch(request)
+        return response.isFavourite
+    }
+
+    func toggleFavourite(tmdbMovieId: Int) async throws -> Bool {
+        guard let sessionId = sessionManager.sessionId else { throw ListsServiceError.unauthenticated }
+        let request = ToggleFavouriteRequest(baseURL: kinoAPIConfig.baseURL, sessionId: sessionId, tmdbMovieId: tmdbMovieId)
+        let response = try await networkClient.fetch(request)
+        return response.isFavourite
     }
 }

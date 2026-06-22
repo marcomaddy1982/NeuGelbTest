@@ -18,22 +18,36 @@ enum MovieDetailViewState {
 @Observable
 final class MovieDetailViewModel {
     var state: MovieDetailViewState = .loading
-    
+    var isFavourite: Bool = false
+
     private let movieService: MovieServiceProtocol
     private(set) var imageService: ImageServiceProtocol
     private let recentlyViewedRepository: RecentlyViewedRepositoryProtocol
+    private let listsService: any ListsServiceProtocol
 
     private let backdropImageSize = "w780"
     
     let movie: Movie
     
-    init(movie: Movie, movieService: MovieServiceProtocol, imageService: ImageServiceProtocol, recentlyViewedRepository: RecentlyViewedRepositoryProtocol) {
+    init(movie: Movie,
+         movieService: MovieServiceProtocol,
+         imageService: ImageServiceProtocol,
+         recentlyViewedRepository: RecentlyViewedRepositoryProtocol,
+         listsService: any ListsServiceProtocol
+    ) {
         self.movie = movie
         self.movieService = movieService
         self.imageService = imageService
         self.recentlyViewedRepository = recentlyViewedRepository
+        self.listsService = listsService
     }
     
+    func loadDetail() async {
+        async let movieDetail: Void = loadMovieDetail()
+        async let favouriteState: Void = loadFavouriteState()
+        _ = await (movieDetail, favouriteState)
+    }
+
     func loadMovieDetail() async {
         state = .loading
         
@@ -48,6 +62,18 @@ final class MovieDetailViewModel {
         }
     }
     
+    func loadFavouriteState() async {
+        isFavourite = (try? await listsService.checkFavourite(tmdbMovieId: movie.tmdbId)) ?? false
+    }
+
+    func toggleFavourite() async {
+        do {
+            isFavourite = try await listsService.toggleFavourite(tmdbMovieId: movie.tmdbId)
+        } catch {
+            print("❌ Failed to toggle favourite: \(error.localizedDescription)")
+        }
+    }
+
     func saveRecentlyViewed() async {
         do {
             try await recentlyViewedRepository.saveMovie(movie)

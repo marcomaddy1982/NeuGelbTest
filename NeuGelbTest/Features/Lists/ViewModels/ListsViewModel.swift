@@ -4,7 +4,6 @@ import Observation
 enum ListsViewState {
     case loading
     case success([KinoList])
-    case empty
     case error(String)
 }
 
@@ -22,7 +21,8 @@ final class ListsViewModel {
         state = .loading
         do {
             let lists = try await listsService.fetchLists()
-            state = lists.isEmpty ? .empty : .success(lists)
+            let sorted = lists.sorted { $0.isFavourite && !$1.isFavourite }
+            state = .success(sorted)
         } catch {
             state = .error("Failed to load lists: \(error.localizedDescription)")
         }
@@ -33,7 +33,7 @@ final class ListsViewModel {
             try await listsService.deleteList(id: id)
             if case .success(let lists) = state {
                 let updated = lists.filter { $0.id != id }
-                state = updated.isEmpty ? .empty : .success(updated)
+                state = .success(updated)
             }
         } catch {
             state = .error("Failed to delete list: \(error.localizedDescription)")

@@ -20,7 +20,7 @@ struct MovieDetailViewModelTests {
         let mockMovieService = MockMovieService()
         let mockImageService = MockImageService()
         let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository, listsService: MockListsService())
         
         if case .loading = sut.state {
             #expect(true)
@@ -45,7 +45,7 @@ struct MovieDetailViewModelTests {
         let mockImageService = MockImageService()
         let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository, listsService: MockListsService())
         
         await sut.loadMovieDetail()
         
@@ -67,7 +67,7 @@ struct MovieDetailViewModelTests {
         let mockImageService = MockImageService()
         let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository, listsService: MockListsService())
         await sut.loadMovieDetail()
         
         #expect(sut.title == "The Shawshank Redemption")
@@ -83,7 +83,7 @@ struct MovieDetailViewModelTests {
         let mockImageService = MockImageService()
         let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository, listsService: MockListsService())
         await sut.loadMovieDetail()
         
         #expect(sut.voteAverageFormatted == "8.6")
@@ -99,7 +99,7 @@ struct MovieDetailViewModelTests {
         let mockImageService = MockImageService()
         let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository, listsService: MockListsService())
         await sut.loadMovieDetail()
         
         #expect(!sut.releaseDate.isEmpty)
@@ -116,7 +116,7 @@ struct MovieDetailViewModelTests {
         let mockImageService = MockImageService()
         let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository, listsService: MockListsService())
         await sut.loadMovieDetail()
         
         #expect(!sut.runtime.isEmpty)
@@ -132,7 +132,7 @@ struct MovieDetailViewModelTests {
         let mockImageService = MockImageService()
         let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository, listsService: MockListsService())
         await sut.loadMovieDetail()
         
         #expect(sut.overview == "A detailed overview")
@@ -148,7 +148,7 @@ struct MovieDetailViewModelTests {
         let mockImageService = MockImageService()
         let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository, listsService: MockListsService())
         await sut.loadMovieDetail()
         
         #expect(sut.overview == "No overview available")
@@ -164,7 +164,7 @@ struct MovieDetailViewModelTests {
         let mockImageService = MockImageService()
         let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository, listsService: MockListsService())
         await sut.loadMovieDetail()
         
         #expect(sut.tagline == "A good tagline")
@@ -180,7 +180,7 @@ struct MovieDetailViewModelTests {
         let mockImageService = MockImageService()
         let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository, listsService: MockListsService())
         await sut.loadMovieDetail()
         
         #expect(sut.backdropImageURL != nil)
@@ -196,7 +196,7 @@ struct MovieDetailViewModelTests {
         let mockImageService = MockImageService()
         let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository, listsService: MockListsService())
         await sut.loadMovieDetail()
         
         #expect(sut.backdropImageURL == nil)
@@ -212,7 +212,7 @@ struct MovieDetailViewModelTests {
         let mockImageService = MockImageService()
         let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository, listsService: MockListsService())
         await sut.loadMovieDetail()
         
         #expect(sut.hasBackdrop == true)
@@ -228,7 +228,7 @@ struct MovieDetailViewModelTests {
         let mockImageService = MockImageService()
         let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository, listsService: MockListsService())
         await sut.loadMovieDetail()
         
         #expect(sut.hasTagline == true)
@@ -245,7 +245,7 @@ struct MovieDetailViewModelTests {
         let mockImageService = MockImageService()
         let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository, listsService: MockListsService())
         await sut.loadMovieDetail()
         
         #expect(sut.hasGenres == true)
@@ -262,7 +262,7 @@ struct MovieDetailViewModelTests {
         let mockImageService = MockImageService()
         let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository, listsService: MockListsService())
         await sut.loadMovieDetail()
         
         #expect(sut.hasFinancialInfo == true)
@@ -279,7 +279,7 @@ struct MovieDetailViewModelTests {
         let mockImageService = MockImageService()
         let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository, listsService: MockListsService())
         await sut.loadMovieDetail()
         
         #expect(sut.hasProductionCompanies == true)
@@ -296,7 +296,7 @@ struct MovieDetailViewModelTests {
         let mockImageService = MockImageService()
         let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository, listsService: MockListsService())
         await sut.loadMovieDetail()
         
         #expect(sut.hasProductionCountries == true)
@@ -313,7 +313,7 @@ struct MovieDetailViewModelTests {
         let mockImageService = MockImageService()
         let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository, listsService: MockListsService())
         await sut.loadMovieDetail()
         
         #expect(sut.hasSpokenLanguages == true)
@@ -329,7 +329,7 @@ struct MovieDetailViewModelTests {
         let mockImageService = MockImageService()
         let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
         
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository, listsService: MockListsService())
         
         await sut.loadMovieDetail()
         
@@ -344,15 +344,91 @@ struct MovieDetailViewModelTests {
     func testLoadMovieDetailCallsServiceWithCorrectId() async {
         let testMovie = TestDataBuilder.makeSampleMovie(tmdbId: 12345)
         let mockMovieDetail = TestDataBuilder.makeSampleMovieDetail()
-        
+
         let mockMovieService = MockMovieService()
         mockMovieService.simulateDetailSuccess(with: mockMovieDetail)
         let mockImageService = MockImageService()
         let mockRecentlyViewedRepository = MockRecentlyViewedRepository()
-        
-        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository)
+
+        let sut = MovieDetailViewModel(movie: testMovie, movieService: mockMovieService, imageService: mockImageService, recentlyViewedRepository: mockRecentlyViewedRepository, listsService: MockListsService())
         await sut.loadMovieDetail()
-        
+
         #expect(mockMovieService.lastMovieIdRequested == 12345)
+    }
+
+    // MARK: - Favourite Tests
+
+    @Test("loadFavouriteState sets isFavourite to true when movie is in favourites")
+    func testLoadFavouriteStateTrue() async {
+        let testMovie = TestDataBuilder.makeSampleMovie(tmdbId: 550)
+        let mockListsService = MockListsService()
+        mockListsService.mockIsFavourite = true
+
+        let sut = MovieDetailViewModel(
+            movie: testMovie,
+            movieService: MockMovieService(),
+            imageService: MockImageService(),
+            recentlyViewedRepository: MockRecentlyViewedRepository(),
+            listsService: mockListsService
+        )
+        await sut.loadFavouriteState()
+
+        #expect(sut.isFavourite == true)
+        #expect(mockListsService.lastCheckedTmdbMovieId == 550)
+    }
+
+    @Test("loadFavouriteState sets isFavourite to false when movie is not in favourites")
+    func testLoadFavouriteStateFalse() async {
+        let testMovie = TestDataBuilder.makeSampleMovie(tmdbId: 550)
+        let mockListsService = MockListsService()
+        mockListsService.mockIsFavourite = false
+
+        let sut = MovieDetailViewModel(
+            movie: testMovie,
+            movieService: MockMovieService(),
+            imageService: MockImageService(),
+            recentlyViewedRepository: MockRecentlyViewedRepository(),
+            listsService: mockListsService
+        )
+        await sut.loadFavouriteState()
+
+        #expect(sut.isFavourite == false)
+    }
+
+    @Test("loadFavouriteState silently fails and defaults to false on error")
+    func testLoadFavouriteStateHandlesError() async {
+        let testMovie = TestDataBuilder.makeSampleMovie()
+        let mockListsService = MockListsService()
+        mockListsService.error = NetworkError.noData
+
+        let sut = MovieDetailViewModel(
+            movie: testMovie,
+            movieService: MockMovieService(),
+            imageService: MockImageService(),
+            recentlyViewedRepository: MockRecentlyViewedRepository(),
+            listsService: mockListsService
+        )
+        await sut.loadFavouriteState()
+
+        #expect(sut.isFavourite == false)
+    }
+
+    @Test("toggleFavourite updates isFavourite with service result")
+    func testToggleFavourite() async {
+        let testMovie = TestDataBuilder.makeSampleMovie(tmdbId: 550)
+        let mockListsService = MockListsService()
+        mockListsService.mockToggleResult = true
+
+        let sut = MovieDetailViewModel(
+            movie: testMovie,
+            movieService: MockMovieService(),
+            imageService: MockImageService(),
+            recentlyViewedRepository: MockRecentlyViewedRepository(),
+            listsService: mockListsService
+        )
+        await sut.toggleFavourite()
+
+        #expect(sut.isFavourite == true)
+        #expect(mockListsService.lastToggledTmdbMovieId == 550)
     }
 }

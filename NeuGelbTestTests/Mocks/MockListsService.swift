@@ -11,11 +11,18 @@ final class MockListsService: ListsServiceProtocol {
     var deleteListCallCount: Int = 0
     var addItemCallCount: Int = 0
     var removeItemCallCount: Int = 0
+    var checkFavouriteCallCount: Int = 0
+    var toggleFavouriteCallCount: Int = 0
 
     var lastCreatedListName: String?
     var lastDeletedListId: Int?
     var lastAddedItem: (listId: Int, tmdbMovieId: Int)?
     var lastRemovedItem: (listId: Int, tmdbMovieId: Int)?
+    var lastCheckedTmdbMovieId: Int?
+    var lastToggledTmdbMovieId: Int?
+
+    var mockIsFavourite: Bool = false
+    var mockToggleResult: Bool = true
 
     var mockLists: [KinoList] = []
     var mockList: KinoList?
@@ -53,5 +60,19 @@ final class MockListsService: ListsServiceProtocol {
         removeItemCallCount += 1
         lastRemovedItem = (listId, tmdbMovieId)
         if let error { throw error }
+    }
+
+    func checkFavourite(tmdbMovieId: Int) async throws -> Bool {
+        checkFavouriteCallCount += 1
+        lastCheckedTmdbMovieId = tmdbMovieId
+        if let error { throw error }
+        return mockIsFavourite
+    }
+
+    func toggleFavourite(tmdbMovieId: Int) async throws -> Bool {
+        toggleFavouriteCallCount += 1
+        lastToggledTmdbMovieId = tmdbMovieId
+        if let error { throw error }
+        return mockToggleResult
     }
 }

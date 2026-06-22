@@ -10,18 +10,14 @@ struct ListsView: View {
             switch viewModel.state {
             case .loading:
                 ProgressView()
-            case .empty:
-                EmptyStateView(
-                    icon: "list.bullet",
-                    title: "lists.empty.title",
-                    message: "lists.empty.subtitle"
-                )
             case .success(let lists):
                 List {
                     ForEach(lists) { list in
                         HStack {
                             Text(list.name)
                             Spacer()
+                            Text("\(list.itemCount)")
+                                .foregroundStyle(.secondary)
                             if list.isFavourite {
                                 Image(systemName: "heart.fill")
                                     .foregroundStyle(.red)

@@ -31,8 +31,18 @@ struct MovieDetailView: View {
         }
         .navigationTitle("movieDetail.navigationTitle")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    Task { await viewModel.toggleFavourite() }
+                } label: {
+                    Image(systemName: viewModel.isFavourite ? "heart.fill" : "heart")
+                        .foregroundStyle(.red)
+                }
+            }
+        }
         .task {
-            await viewModel.loadMovieDetail()
+            await viewModel.loadDetail()
         }
         .onAppear {
             Task {

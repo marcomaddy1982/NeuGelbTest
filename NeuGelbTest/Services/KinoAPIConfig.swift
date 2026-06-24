@@ -4,6 +4,6 @@ final class KinoAPIConfig: Sendable {
     let baseURL: URL
 
     init() {
-        baseURL = URL(string: "http://localhost:3000")!
+        baseURL = URL(string: "https://kino-api-zozt.onrender.com")!
     }
 }

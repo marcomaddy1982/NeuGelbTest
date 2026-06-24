@@ -11,7 +11,9 @@ import SwiftData
 struct RecentlyResearchedView: View {
     @Query(sort: \RecentlyViewedMovie.viewedAtTimestamp, order: .reverse)
     var recentlyViewedMovies: [RecentlyViewedMovie]
-    
+
+    @Environment(AppRouter.self) private var router
+
     var body: some View {
         ScrollView {
             LazyVGrid(
@@ -21,7 +23,7 @@ struct RecentlyResearchedView: View {
                 spacing: 16
             ) {
                 ForEach(recentlyViewedMovies, id: \.tmdbId) { movie in
-                    MovieCardView(viewModel: MovieCardViewModelFactory.makeMovieCardViewModel(for: movie.toMovie()))
+                    MovieCardView(viewModel: MovieCardViewModelFactory.makeMovieCardViewModel(for: movie.toMovie()), onTap: { router.navigate(to: .movieDetail($0)) })
                 }
             }
             .padding()

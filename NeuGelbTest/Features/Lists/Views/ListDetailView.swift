@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ListDetailView: View {
     @State var viewModel: ListDetailViewModel
+    @Environment(ListsRouter.self) private var router
 
     var body: some View {
         Group {
@@ -22,7 +23,7 @@ struct ListDetailView: View {
                             spacing: 16
                         ) {
                             ForEach(items) { item in
-                                MovieCardView(viewModel: MovieCardViewModelFactory.makeMovieCardViewModel(for: item))
+                                MovieCardView(viewModel: MovieCardViewModelFactory.makeMovieCardViewModel(for: item), onTap: { router.navigate(to: .movieDetail($0)) })
                             }
                         }
                         .padding()

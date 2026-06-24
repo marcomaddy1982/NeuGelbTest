@@ -51,8 +51,8 @@ struct MovieListView: View {
                         switch routePath.route {
                         case .listDetail(let list):
                             ListDetailView(viewModel: ListDetailViewModelFactory.makeListDetailViewModel(list: list))
-                        case .movieDetail:
-                            EmptyView()
+                        case .movieDetail(let movie):
+                            MovieDetailView(movie: movie)
                         }
                     }
             }

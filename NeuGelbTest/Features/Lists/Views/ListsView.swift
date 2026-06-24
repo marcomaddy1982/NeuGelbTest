@@ -23,6 +23,9 @@ struct ListsView: View {
                                 Image(systemName: "heart.fill")
                                     .foregroundStyle(.red)
                             }
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
                         }
                         .contentShape(Rectangle())
                         .onTapGesture {

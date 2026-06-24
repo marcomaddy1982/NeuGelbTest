@@ -11,6 +11,7 @@ struct MovieListSuccessView: View {
     let movies: [Movie]
     let viewModel: MovieListViewModel
 
+    @Environment(AppRouter.self) private var router
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @ScaledMetric(relativeTo: .body) private var gridSpacing: CGFloat = 16
     @ScaledMetric(relativeTo: .body) private var gridPadding: CGFloat = 16
@@ -25,7 +26,7 @@ struct MovieListSuccessView: View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: gridSpacing) {
                 ForEach(movies, id: \.id) { movie in
-                    MovieCardView(viewModel: viewModel.makeCardViewModel(for: movie))
+                    MovieCardView(viewModel: viewModel.makeCardViewModel(for: movie), onTap: { router.navigate(to: .movieDetail($0)) })
                         .onAppear {
                             if viewModel.shouldLoadNextPage(for: movie) {
                                 Task {

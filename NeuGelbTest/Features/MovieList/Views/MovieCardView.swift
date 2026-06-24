@@ -10,14 +10,14 @@ import Networking
 
 struct MovieCardView: View {
     @State var viewModel: MovieCardViewModel
-    @Environment(AppRouter.self) private var router
+    var onTap: (Movie) -> Void
 
     @ScaledMetric(relativeTo: .title) private var cardHeight: CGFloat = 245
     @ScaledMetric(relativeTo: .title) private var posterHeight: CGFloat = 140
 
     var body: some View {
         Button {
-            router.navigate(to: .movieDetail(viewModel.movie))
+            onTap(viewModel.movie)
         } label: {
             VStack(alignment: .leading, spacing: 0) {
                 posterImageSection
@@ -102,10 +102,9 @@ struct MovieCardView: View {
         let viewModel = MovieCardViewModel(movie: movie, imageService: imageService)
 
         NavigationStack {
-            MovieCardView(viewModel: viewModel)
+            MovieCardView(viewModel: viewModel, onTap: { _ in })
                 .padding()
         }
-        .environment(AppRouter())
     } else {
         Text("Preview error")
     }

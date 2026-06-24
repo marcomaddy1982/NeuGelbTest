@@ -2,7 +2,7 @@ import Foundation
 import Networking
 
 struct FetchListsRequest: NetworkRequest, Sendable {
-    typealias Response = [KinoList]
+    typealias Response = [MovieList]
 
     let baseURL: URL
     let endpoint: String = "v1/lists"

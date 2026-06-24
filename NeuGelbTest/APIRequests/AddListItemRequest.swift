@@ -2,7 +2,7 @@ import Foundation
 import Networking
 
 struct AddListItemRequest: NetworkRequest, Sendable {
-    typealias Response = KinoListItem
+    typealias Response = AddListItemResponse
 
     let baseURL: URL
     let endpoint: String

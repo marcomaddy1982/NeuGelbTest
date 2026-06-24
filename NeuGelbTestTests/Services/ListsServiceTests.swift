@@ -53,6 +53,29 @@ struct ListsServiceTests {
         }
     }
 
+    // MARK: - fetchItems
+
+    @Test("fetchItems returns decoded items")
+    func testFetchItemsReturnsItems() async throws {
+        let (sut, mockClient, _) = makeSUT()
+        let json = #"[{"id":550,"title":"Fight Club","poster_path":"/fc.jpg","vote_average":8.4,"release_date":"1999-10-15"}]"#.data(using: .utf8)!
+        mockClient.simulateSuccess(with: json)
+
+        let items = try await sut.fetchItems(listId: 1)
+
+        #expect(items.count == 1)
+        #expect(items.first?.tmdbId == 550)
+    }
+
+    @Test("fetchItems throws when unauthenticated")
+    func testFetchItemsThrowsWhenUnauthenticated() async {
+        let (sut, _, _) = makeSUT(sessionId: nil)
+
+        await #expect(throws: ListsServiceError.unauthenticated) {
+            try await sut.fetchItems(listId: 1)
+        }
+    }
+
     // MARK: - createList
 
     @Test("createList returns new list")
@@ -100,7 +123,7 @@ struct ListsServiceTests {
     @Test("addItem returns list item")
     func testAddItemReturnsListItem() async throws {
         let (sut, mockClient, _) = makeSUT()
-        let json = #"{"id":10,"tmdbMovieId":550,"createdAt":"2026-01-01T00:00:00.000Z"}"#.data(using: .utf8)!
+        let json = #"{"tmdbMovieId":550}"#.data(using: .utf8)!
         mockClient.simulateSuccess(with: json)
 
         let item = try await sut.addItem(listId: 1, tmdbMovieId: 550)

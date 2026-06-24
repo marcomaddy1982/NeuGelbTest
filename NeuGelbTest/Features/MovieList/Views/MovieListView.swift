@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MovieListView: View {
     @State private var viewModel = MovieListViewModelFactory.makeMovieListViewModel()
+    @State private var listsRouter = ListsRouter()
 
     var body: some View {
         @Bindable var viewModel = viewModel
@@ -44,9 +45,18 @@ struct MovieListView: View {
             }
         }
         .sheet(isPresented: $viewModel.showLists) {
-            NavigationStack {
+            NavigationStack(path: $listsRouter.path) {
                 ListsView()
+                    .navigationDestination(for: AppRoutePath.self) { routePath in
+                        switch routePath.route {
+                        case .listDetail(let list):
+                            ListDetailView(viewModel: ListDetailViewModelFactory.makeListDetailViewModel(list: list))
+                        case .movieDetail:
+                            EmptyView()
+                        }
+                    }
             }
+            .environment(listsRouter)
         }
         .sheet(isPresented: $viewModel.showSettings) {
             SettingsView()

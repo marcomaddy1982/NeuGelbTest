@@ -20,6 +20,8 @@ struct AppRootView: View {
                             switch routePath.route {
                             case .movieDetail(let movie):
                                 MovieDetailView(movie: movie)
+                            case .listDetail:
+                                EmptyView()
                             }
                         }
                 }
@@ -35,6 +37,8 @@ struct AppRootView: View {
                             switch routePath.route {
                             case .movieDetail(let movie):
                                 MovieDetailView(movie: movie)
+                            case .listDetail:
+                                EmptyView()
                             }
                         }
                 }
@@ -50,6 +54,8 @@ struct AppRootView: View {
                             switch routePath.route {
                             case .movieDetail(let movie):
                                 MovieDetailView(movie: movie)
+                            case .listDetail:
+                                EmptyView()
                             }
                         }
                 }

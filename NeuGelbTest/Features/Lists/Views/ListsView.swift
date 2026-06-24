@@ -3,6 +3,7 @@ import SwiftUI
 @MainActor
 struct ListsView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(ListsRouter.self) private var router
     @State private var viewModel = ListsViewModelFactory.makeListsViewModel()
 
     var body: some View {
@@ -22,6 +23,10 @@ struct ListsView: View {
                                 Image(systemName: "heart.fill")
                                     .foregroundStyle(.red)
                             }
+                        }
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            router.navigate(to: .listDetail(list))
                         }
                         .swipeActions(edge: .trailing) {
                             if !list.isFavourite {

@@ -3,7 +3,7 @@ import Observation
 
 enum ListsViewState {
     case loading
-    case success([KinoList])
+    case success([MovieList])
     case error(String)
 }
 

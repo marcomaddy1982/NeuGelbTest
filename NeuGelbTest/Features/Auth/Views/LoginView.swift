@@ -4,6 +4,7 @@ struct LoginView: View {
     @State private var viewModel = LoginViewModelFactory.makeLoginViewModel()
 
     var body: some View {
+        @Bindable var viewModel = viewModel
         VStack(spacing: 16) {
             Spacer()
 
@@ -35,11 +36,23 @@ struct LoginView: View {
                 ProgressView()
                     .padding()
             } else {
-                PrimaryActionButton(title: "auth.login") {
-                    Task { await viewModel.login() }
+                VStack(spacing: 12) {
+                    PrimaryActionButton(title: "auth.login") {
+                        Task { await viewModel.login() }
+                    }
+
+                    SecondaryActionButton(title: "auth.createAccount") {
+                        viewModel.showRegister = true
+                    }
                 }
+                .padding(.horizontal, 24)
             }
         }
         .padding(.bottom, 48)
+        .sheet(isPresented: $viewModel.showRegister) {
+            NavigationStack {
+                RegisterView()
+            }
+        }
     }
 }

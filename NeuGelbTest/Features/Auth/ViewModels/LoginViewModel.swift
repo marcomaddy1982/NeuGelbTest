@@ -13,6 +13,7 @@ enum LoginState: Equatable {
 @MainActor
 final class LoginViewModel {
     var loginState: LoginState = .idle
+    var showRegister: Bool = false
 
     private let authService: any AuthServiceProtocol
     private let sessionManager: any SessionManagerProtocol
@@ -32,7 +33,7 @@ final class LoginViewModel {
             let callbackURL = try await performWebAuth(url: url)
             let approvedToken = try extractRequestToken(from: callbackURL)
             let session = try await authService.createSession(requestToken: approvedToken)
-            try sessionManager.save(sessionId: session.sessionId)
+            try sessionManager.save(accessToken: session.sessionId, refreshToken: session.sessionId)
             loginState = .idle
         } catch {
             let nsError = error as NSError

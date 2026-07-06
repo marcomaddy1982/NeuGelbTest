@@ -48,8 +48,8 @@ struct SettingsView: View {
                         .font(AppFonts.caption)
                 }
 
-            case .loggedIn(let sessionId):
-                accountProfileCard(sessionId: sessionId)
+            case .loggedIn:
+                accountProfileCard()
                 Button(LocalizedStringKey("settings.account.logout"), role: .destructive) {
                     Task { await authViewModel.logout() }
                 }
@@ -69,7 +69,7 @@ struct SettingsView: View {
         }
     }
 
-    private func accountProfileCard(sessionId: String) -> some View {
+    private func accountProfileCard() -> some View {
         HStack(spacing: 12) {
             ZStack {
                 Circle()
@@ -82,7 +82,7 @@ struct SettingsView: View {
                     )
                     .frame(width: 44, height: 44)
 
-                Text(String(sessionId.prefix(2)).uppercased())
+                Image(systemName: "person.fill")
                     .font(AppFonts.label)
                     .foregroundColor(.white)
             }

@@ -20,7 +20,7 @@ final class AppRootViewModel {
     @ObservationIgnored @AppStorage("defaultTab") private var defaultTab: DefaultTab = .discover
     @ObservationIgnored @Injected<SessionManagerProtocol> private var sessionManager: any SessionManagerProtocol
 
-    var isAuthenticated: Bool { sessionManager.sessionId != nil }
+    var isAuthenticated: Bool { sessionManager.accessToken != nil }
     var selectedTab: Tab
     var discoverRouter = AppRouter()
     var searchRouter = AppRouter()

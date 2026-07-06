@@ -9,6 +9,7 @@ struct PrimaryActionButton: View {
             Text(title)
                 .foregroundColor(.white)
                 .padding()
+                .frame(maxWidth: .infinity)
                 .background(AppColors.primary)
                 .cornerRadius(8)
         }

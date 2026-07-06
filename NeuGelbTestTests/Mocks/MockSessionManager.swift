@@ -2,24 +2,29 @@ import Foundation
 @testable import NeuGelbTest
 
 final class MockSessionManager: SessionManagerProtocol {
-    var sessionId: String?
+    var accessToken: String?
+    var refreshToken: String?
 
     var saveCallCount: Int = 0
     var deleteSessionCallCount: Int = 0
-    var lastSavedSessionId: String?
+    var lastSavedAccessToken: String?
+    var lastSavedRefreshToken: String?
     var shouldThrow: Bool = false
 
-    func save(sessionId: String) throws {
+    func save(accessToken: String, refreshToken: String) throws {
         saveCallCount += 1
-        lastSavedSessionId = sessionId
+        lastSavedAccessToken = accessToken
+        lastSavedRefreshToken = refreshToken
         if shouldThrow { throw MockSessionError.generic }
-        self.sessionId = sessionId
+        self.accessToken = accessToken
+        self.refreshToken = refreshToken
     }
 
     func deleteSession() throws {
         deleteSessionCallCount += 1
         if shouldThrow { throw MockSessionError.generic }
-        sessionId = nil
+        accessToken = nil
+        refreshToken = nil
     }
 }
 

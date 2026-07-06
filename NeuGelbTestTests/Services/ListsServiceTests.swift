@@ -7,10 +7,10 @@ import Networking
 @MainActor
 struct ListsServiceTests {
 
-    private func makeSUT(sessionId: String? = "test-session-id") -> (ListsService, MockNetworkClient, MockSessionManager) {
+    private func makeSUT(accessToken: String? = "test-access-token") -> (ListsService, MockNetworkClient, MockSessionManager) {
         let mockNetworkClient = MockNetworkClient()
         let mockSessionManager = MockSessionManager()
-        mockSessionManager.sessionId = sessionId
+        mockSessionManager.accessToken = accessToken
 
         DIContainer.shared.reset()
         DIContainer.shared.register(mockNetworkClient as NetworkClientProtocol)
@@ -36,7 +36,7 @@ struct ListsServiceTests {
 
     @Test("fetchLists throws when unauthenticated")
     func testFetchListsThrowsWhenUnauthenticated() async {
-        let (sut, _, _) = makeSUT(sessionId: nil)
+        let (sut, _, _) = makeSUT(accessToken: nil)
 
         await #expect(throws: ListsServiceError.unauthenticated) {
             try await sut.fetchLists()
@@ -69,7 +69,7 @@ struct ListsServiceTests {
 
     @Test("fetchItems throws when unauthenticated")
     func testFetchItemsThrowsWhenUnauthenticated() async {
-        let (sut, _, _) = makeSUT(sessionId: nil)
+        let (sut, _, _) = makeSUT(accessToken: nil)
 
         await #expect(throws: ListsServiceError.unauthenticated) {
             try await sut.fetchItems(listId: 1)
@@ -92,7 +92,7 @@ struct ListsServiceTests {
 
     @Test("createList throws when unauthenticated")
     func testCreateListThrowsWhenUnauthenticated() async {
-        let (sut, _, _) = makeSUT(sessionId: nil)
+        let (sut, _, _) = makeSUT(accessToken: nil)
 
         await #expect(throws: ListsServiceError.unauthenticated) {
             try await sut.createList(name: "Horror")
@@ -111,7 +111,7 @@ struct ListsServiceTests {
 
     @Test("deleteList throws when unauthenticated")
     func testDeleteListThrowsWhenUnauthenticated() async {
-        let (sut, _, _) = makeSUT(sessionId: nil)
+        let (sut, _, _) = makeSUT(accessToken: nil)
 
         await #expect(throws: ListsServiceError.unauthenticated) {
             try await sut.deleteList(id: 1)
@@ -133,7 +133,7 @@ struct ListsServiceTests {
 
     @Test("addItem throws when unauthenticated")
     func testAddItemThrowsWhenUnauthenticated() async {
-        let (sut, _, _) = makeSUT(sessionId: nil)
+        let (sut, _, _) = makeSUT(accessToken: nil)
 
         await #expect(throws: ListsServiceError.unauthenticated) {
             try await sut.addItem(listId: 1, tmdbMovieId: 550)
@@ -152,7 +152,7 @@ struct ListsServiceTests {
 
     @Test("removeItem throws when unauthenticated")
     func testRemoveItemThrowsWhenUnauthenticated() async {
-        let (sut, _, _) = makeSUT(sessionId: nil)
+        let (sut, _, _) = makeSUT(accessToken: nil)
 
         await #expect(throws: ListsServiceError.unauthenticated) {
             try await sut.removeItem(listId: 1, tmdbMovieId: 550)

@@ -8,11 +8,13 @@ protocol AuthServiceProtocol {
     func createSession(requestToken: String) async throws -> AuthSession
     func deleteSession(sessionId: String) async throws -> DeleteSessionResponse
     func authorizationURL(for requestToken: String) -> URL
+    func register(email: String, password: String, name: String, phoneNumber: String) async throws -> AuthTokenResponse
 }
 
 class AuthService: AuthServiceProtocol {
     @Injected<NetworkClientProtocol> var networkClient: any NetworkClientProtocol
     @Injected<NetworkConfig> var networkConfig: NetworkConfig
+    @Injected<KinoAPIConfig> var kinoAPIConfig: KinoAPIConfig
 
     func requestToken() async throws -> RequestToken {
         let request = RequestTokenRequest(baseURL: networkConfig.baseURL, accessToken: networkConfig.accessToken)
@@ -31,5 +33,10 @@ class AuthService: AuthServiceProtocol {
 
     func authorizationURL(for requestToken: String) -> URL {
         URL(string: "\(authorizationBaseURL)\(requestToken)?redirect_to=neugelbtest://auth")!
+    }
+
+    func register(email: String, password: String, name: String, phoneNumber: String) async throws -> AuthTokenResponse {
+        let request = RegisterRequest(baseURL: kinoAPIConfig.baseURL, email: email, password: password, name: name, phoneNumber: phoneNumber)
+        return try await networkClient.fetch(request)
     }
 }

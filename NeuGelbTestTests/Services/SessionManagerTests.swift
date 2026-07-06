@@ -14,30 +14,33 @@ struct SessionManagerTests {
         return SessionManager()
     }
 
-    @Test("sessionId is nil when keychain is empty")
-    func testSessionIdIsNilWhenKeychainIsEmpty() {
+    @Test("accessToken is nil when keychain is empty")
+    func testAccessTokenIsNilWhenKeychainIsEmpty() {
         let sut = makeSUT()
 
-        #expect(sut.sessionId == nil)
+        #expect(sut.accessToken == nil)
+        #expect(sut.refreshToken == nil)
     }
 
-    @Test("save then sessionId returns the saved value")
-    func testSaveThenSessionIdReturnsValue() throws {
+    @Test("save then accessToken and refreshToken return saved values")
+    func testSaveThenTokensReturnValues() throws {
         let sut = makeSUT()
 
-        try sut.save(sessionId: "abc123")
+        try sut.save(accessToken: "access123", refreshToken: "refresh123")
 
-        #expect(sut.sessionId == "abc123")
+        #expect(sut.accessToken == "access123")
+        #expect(sut.refreshToken == "refresh123")
     }
 
-    @Test("deleteSession then sessionId is nil")
-    func testDeleteSessionThenSessionIdIsNil() throws {
+    @Test("deleteSession then tokens are nil")
+    func testDeleteSessionThenTokensAreNil() throws {
         let sut = makeSUT()
 
-        try sut.save(sessionId: "abc123")
+        try sut.save(accessToken: "access123", refreshToken: "refresh123")
         try sut.deleteSession()
 
-        #expect(sut.sessionId == nil)
+        #expect(sut.accessToken == nil)
+        #expect(sut.refreshToken == nil)
     }
 
     @Test("save propagates KeychainError when keychain throws")
@@ -45,7 +48,7 @@ struct SessionManagerTests {
         let sut = makeSUT(shouldThrow: true)
 
         #expect(throws: (any Error).self) {
-            try sut.save(sessionId: "abc123")
+            try sut.save(accessToken: "access123", refreshToken: "refresh123")
         }
     }
 

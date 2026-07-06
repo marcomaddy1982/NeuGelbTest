@@ -7,7 +7,7 @@ import SwiftData
 enum AuthState: Equatable {
     case loggedOut
     case loading
-    case loggedIn(sessionId: String)
+    case loggedIn
     case error(String)
 }
 
@@ -30,7 +30,7 @@ final class AuthViewModel {
         self.authService = authService
         self.sessionManager = sessionManager
         self.modelContainer = modelContainer
-        self.state = sessionManager.sessionId.map { .loggedIn(sessionId: $0) } ?? .loggedOut
+        self.state = sessionManager.accessToken != nil ? .loggedIn : .loggedOut
     }
 
     // MARK: - Public
@@ -43,8 +43,8 @@ final class AuthViewModel {
             let callbackURL = try await performWebAuth(url: url)
             let approvedToken = try extractRequestToken(from: callbackURL)
             let session = try await authService.createSession(requestToken: approvedToken)
-            try sessionManager.save(sessionId: session.sessionId)
-            state = .loggedIn(sessionId: session.sessionId)
+            try sessionManager.save(accessToken: session.sessionId, refreshToken: session.sessionId)
+            state = .loggedIn
         } catch {
             let nsError = error as NSError
             if nsError.domain == ASWebAuthenticationSessionErrorDomain,
@@ -57,9 +57,8 @@ final class AuthViewModel {
     }
 
     func logout() async {
-        let currentSessionId = sessionManager.sessionId
         state = .loading
-        if let sessionId = currentSessionId {
+        if let sessionId = sessionManager.accessToken {
             _ = try? await authService.deleteSession(sessionId: sessionId)
         }
         clearPersistentData()

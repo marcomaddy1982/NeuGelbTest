@@ -4,6 +4,7 @@ import Observation
 enum RegisterState: Equatable {
     case idle
     case loading
+    case success
     case error(String)
 }
 
@@ -58,7 +59,7 @@ final class RegisterViewModel {
                 phoneNumber: phoneNumber
             )
             try sessionManager.save(accessToken: response.accessToken, refreshToken: response.refreshToken)
-            registerState = .idle
+            registerState = .success
         } catch {
             registerState = .error(error.localizedDescription)
         }

@@ -44,10 +44,10 @@ struct LoginView: View {
                     .padding(.horizontal, 32)
             }
 
-            if viewModel.loginState == .loading || viewModel.loginState == .success {
+            if viewModel.loginState == .loading {
                 ProgressView()
                     .padding()
-            } else {
+            } else if viewModel.loginState != .success {
                 VStack(spacing: 12) {
                     PrimaryActionButton(title: "auth.login") {
                         Task { await viewModel.login() }

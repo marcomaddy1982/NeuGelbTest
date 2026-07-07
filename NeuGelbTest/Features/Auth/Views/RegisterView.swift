@@ -60,7 +60,7 @@ struct RegisterView: View {
                 if viewModel.registerState == .loading {
                     ProgressView()
                         .padding()
-                } else {
+                } else if viewModel.registerState != .success {
                     VStack {
                         PrimaryActionButton(title: "register.action") {
                             Task { await viewModel.register() }

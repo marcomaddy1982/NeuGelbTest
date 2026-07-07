@@ -12,7 +12,7 @@ import Foundation
 struct TestModelContainer {
     static func create() throws -> ModelContainer {
         let container = try ModelContainer(
-            for: MovieEntity.self, MoviePageMetadata.self,
+            for: MovieEntity.self, MoviePageMetadata.self, RecentlyViewedMovie.self,
             configurations: ModelConfiguration(isStoredInMemoryOnly: true)
         )
         return container

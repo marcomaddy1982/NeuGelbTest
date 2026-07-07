@@ -36,9 +36,9 @@ struct SettingsView: View {
         Section(LocalizedStringKey("settings.section.account")) {
             switch authViewModel.state {
             case .loggedOut:
-                Button(LocalizedStringKey("settings.account.login")) {
-                    Task { await authViewModel.login() }
-                }
+                Text("settings.account.loggedOut")
+                    .foregroundColor(.secondary)
+                    .font(AppFonts.caption)
 
             case .loading:
                 HStack {
@@ -62,9 +62,6 @@ struct SettingsView: View {
                         .foregroundColor(.red)
                 }
                 .font(AppFonts.caption)
-                Button(LocalizedStringKey("settings.account.retry")) {
-                    Task { await authViewModel.login() }
-                }
             }
         }
     }

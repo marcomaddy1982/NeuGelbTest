@@ -24,6 +24,18 @@ struct LoginView: View {
 
             Spacer()
 
+            VStack(spacing: 16) {
+                TextField("auth.field.email", text: $viewModel.email)
+                    .formFieldStyle()
+                    .textContentType(.emailAddress)
+                    .keyboardType(.emailAddress)
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+
+                PasswordField(placeholder: "auth.field.password", text: $viewModel.password)
+            }
+            .padding(.horizontal, 24)
+
             if case .error(let message) = viewModel.loginState {
                 Text(message)
                     .captionStyle()
@@ -32,7 +44,7 @@ struct LoginView: View {
                     .padding(.horizontal, 32)
             }
 
-            if viewModel.loginState == .loading {
+            if viewModel.loginState == .loading || viewModel.loginState == .success {
                 ProgressView()
                     .padding()
             } else {
@@ -50,9 +62,7 @@ struct LoginView: View {
         }
         .padding(.bottom, 48)
         .sheet(isPresented: $viewModel.showRegister) {
-            NavigationStack {
-                RegisterView()
-            }
+            RegisterView()
         }
     }
 }

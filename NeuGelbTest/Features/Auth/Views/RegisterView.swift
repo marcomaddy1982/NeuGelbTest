@@ -6,6 +6,7 @@ struct RegisterView: View {
 
     var body: some View {
         @Bindable var viewModel = viewModel
+        NavigationStack {
         ScrollView {
             VStack(spacing: 24) {
                 VStack(spacing: 8) {
@@ -81,6 +82,7 @@ struct RegisterView: View {
                     Image(systemName: "xmark")
                 }
             }
+        }
         }
     }
 }

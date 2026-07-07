@@ -2,10 +2,10 @@ import Foundation
 import Observation
 
 @Observable
-final class ListsRouter {
-    var path: [ListRoute] = []
+final class TabRouter {
+    var path: [TabRoute] = []
 
-    func navigate(to route: ListRoute) {
+    func navigate(to route: TabRoute) {
         path.append(route)
     }
 

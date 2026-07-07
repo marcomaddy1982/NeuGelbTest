@@ -66,7 +66,5 @@ struct ListsView: View {
 }
 
 #Preview {
-    NavigationStack {
-        ListsView()
-    }
+    ListsSheet()
 }

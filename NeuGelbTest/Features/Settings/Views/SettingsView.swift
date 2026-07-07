@@ -1,33 +1,32 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @State private var viewModel = SettingsViewModelFactory.makeSettingsViewModel()
+    var viewModel: SettingsViewModel
     @State private var authViewModel = AuthViewModelFactory.makeAuthViewModel()
+    @Environment(SettingsRouter.self) private var router
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         @Bindable var viewModel = viewModel
-        NavigationStack {
-            Form {
-                accountSection
-                preferencesSection
-                cacheSection
-                aboutSection
-            }
-            .preferredColorScheme(viewModel.appearanceMode.colorScheme)
-            .navigationTitle("settings.navigationTitle")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "xmark")
-                    }
+        Form {
+            accountSection
+            preferencesSection
+            cacheSection
+            aboutSection
+        }
+        .preferredColorScheme(viewModel.appearanceMode.colorScheme)
+        .navigationTitle("settings.navigationTitle")
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "xmark")
                 }
             }
-            .onAppear { viewModel.refreshDefaultTab() }
-            .task { await viewModel.loadCacheCount() }
         }
+        .onAppear { viewModel.refreshDefaultTab() }
+        .task { await viewModel.loadCacheCount() }
     }
 
     // MARK: - Sections
@@ -117,8 +116,8 @@ struct SettingsView: View {
                 .pickerStyle(.segmented)
             }
 
-            NavigationLink {
-                DefaultTabPickerView(selectedTab: $viewModel.defaultTab)
+            Button {
+                router.navigate(to: .defaultTabPicker)
             } label: {
                 HStack(spacing: 12) {
                     iconBadge(systemName: "star.fill", color: AppColors.primary)
@@ -127,14 +126,18 @@ struct SettingsView: View {
                     Text(viewModel.currentDefaultTab.label)
                         .foregroundColor(.secondary)
                         .font(AppFonts.body)
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
                 }
+                .foregroundColor(.primary)
             }
         }
     }
 
     private var cacheSection: some View {
-        NavigationLink {
-            CacheDetailView(viewModel: viewModel)
+        Button {
+            router.navigate(to: .cacheDetail)
         } label: {
             HStack(spacing: 12) {
                 iconBadge(systemName: "internaldrive", color: .orange)
@@ -145,7 +148,11 @@ struct SettingsView: View {
                      : String(format: String(localized: "settings.cache.itemCount"), viewModel.cacheItemCount))
                     .foregroundColor(.secondary)
                     .font(AppFonts.caption)
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
             }
+            .foregroundColor(.primary)
         }
     }
 
@@ -181,95 +188,6 @@ struct SettingsView: View {
     }
 }
 
-// MARK: - Default Tab Picker
-
-private struct DefaultTabPickerView: View {
-    @Binding var selectedTab: DefaultTab
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        List {
-            ForEach(DefaultTab.allCases, id: \.self) { tab in
-                Button {
-                    selectedTab = tab
-                    dismiss()
-                } label: {
-                    HStack {
-                        Text(tab.label)
-                            .foregroundColor(.primary)
-                        Spacer()
-                        if tab == selectedTab {
-                            Image(systemName: "checkmark")
-                                .foregroundColor(AppColors.primary)
-                                .fontWeight(.semibold)
-                        }
-                    }
-                }
-            }
-        }
-        .navigationTitle(LocalizedStringKey("settings.section.defaultTab"))
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-// MARK: - Cache Detail
-
-private struct CacheDetailView: View {
-    var viewModel: SettingsViewModel
-
-    var body: some View {
-        @Bindable var viewModel = viewModel
-        List {
-            Section {
-                HStack {
-                    Text(LocalizedStringKey("settings.cache.itemCountLabel"))
-                    Spacer()
-                    Text(viewModel.cacheItemCount == 0
-                         ? String(localized: "settings.cache.empty")
-                         : String(format: String(localized: "settings.cache.itemCount"), viewModel.cacheItemCount))
-                        .foregroundColor(.secondary)
-                }
-
-                Text("settings.cache.description")
-                    .font(AppFonts.caption)
-                    .foregroundColor(.secondary)
-            }
-
-            Section {
-                Button(role: .destructive) {
-                    viewModel.requestClearCache()
-                } label: {
-                    Label(LocalizedStringKey("settings.cache.clear"), systemImage: "trash")
-                }
-
-                if viewModel.isCacheCleared {
-                    Label {
-                        Text("settings.cache.cleared")
-                    } icon: {
-                        Image(systemName: "checkmark.circle.fill")
-                            .foregroundColor(AppColors.successGreen)
-                    }
-                    .font(AppFonts.caption)
-                    .foregroundColor(AppColors.successGreen)
-                }
-            }
-        }
-        .navigationTitle(LocalizedStringKey("settings.section.cache"))
-        .navigationBarTitleDisplayMode(.inline)
-        .alert(
-            LocalizedStringKey("settings.cache.confirmTitle"),
-            isPresented: $viewModel.showClearCacheConfirmation
-        ) {
-            Button(LocalizedStringKey("settings.cache.confirmButton"), role: .destructive) {
-                Task { await viewModel.clearCache() }
-            }
-            Button("common.cancel", role: .cancel) {}
-        } message: {
-            Text("settings.cache.confirmMessage")
-        }
-    }
-}
-
 #Preview {
-    SettingsView()
+    SettingsSheet()
 }

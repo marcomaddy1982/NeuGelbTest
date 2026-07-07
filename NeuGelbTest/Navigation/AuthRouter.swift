@@ -2,11 +2,11 @@ import Foundation
 import Observation
 
 @Observable
-final class AppRouter {
-    var path: [AppRoutePath] = []
+final class AuthRouter {
+    var path: [AuthRoute] = []
 
-    func navigate(to route: AppRoute) {
-        path.append(AppRoutePath(route))
+    func navigate(to route: AuthRoute) {
+        path.append(route)
     }
 
     func goBack() {

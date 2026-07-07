@@ -1,10 +1,3 @@
-//
-//  RecentlyResearchedView.swift
-//  NeuGelbTest
-//
-//  Created by Marco Maddalena on 27.03.26.
-//
-
 import SwiftUI
 import SwiftData
 
@@ -12,7 +5,7 @@ struct RecentlyResearchedView: View {
     @Query(sort: \RecentlyViewedMovie.viewedAtTimestamp, order: .reverse)
     var recentlyViewedMovies: [RecentlyViewedMovie]
 
-    @Environment(AppRouter.self) private var router
+    @Environment(TabRouter.self) private var router
 
     var body: some View {
         ScrollView {
@@ -34,5 +27,5 @@ struct RecentlyResearchedView: View {
 #Preview {
     RecentlyResearchedView()
         .modelContainer(for: RecentlyViewedMovie.self, inMemory: true)
+        .environment(TabRouter())
 }
-

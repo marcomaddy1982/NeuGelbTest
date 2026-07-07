@@ -7,7 +7,7 @@
 
 import Foundation
 
-nonisolated struct Movie: Codable, Sendable, Identifiable, Equatable {
+nonisolated struct Movie: Codable, Sendable, Identifiable, Equatable, Hashable {
     let id: UUID
     let tmdbId: Int
     let title: String

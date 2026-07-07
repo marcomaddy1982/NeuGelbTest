@@ -1,10 +1,3 @@
-//
-//  AppRootViewModel.swift
-//  NeuGelbTest
-//
-//  Created by Marco Maddalena on 04.06.26.
-//
-
 import SwiftUI
 import Observation
 
@@ -22,9 +15,6 @@ final class AppRootViewModel {
 
     var isAuthenticated: Bool { sessionManager.accessToken != nil }
     var selectedTab: Tab
-    var discoverRouter = AppRouter()
-    var searchRouter = AppRouter()
-    var recentlyViewedRouter = AppRouter()
 
     init() {
         selectedTab = .discover

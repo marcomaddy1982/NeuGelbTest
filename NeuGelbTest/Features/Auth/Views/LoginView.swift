@@ -2,6 +2,7 @@ import SwiftUI
 
 struct LoginView: View {
     @State private var viewModel = LoginViewModelFactory.makeLoginViewModel()
+    @Environment(AuthRouter.self) private var router
 
     var body: some View {
         @Bindable var viewModel = viewModel
@@ -54,15 +55,12 @@ struct LoginView: View {
                     }
 
                     SecondaryActionButton(title: "auth.createAccount") {
-                        viewModel.showRegister = true
+                        router.navigate(to: .register)
                     }
                 }
                 .padding(.horizontal, 24)
             }
         }
         .padding(.bottom, 48)
-        .sheet(isPresented: $viewModel.showRegister) {
-            RegisterView()
-        }
     }
 }

@@ -11,7 +11,7 @@ struct MovieListSuccessView: View {
     let movies: [Movie]
     let viewModel: MovieListViewModel
 
-    @Environment(AppRouter.self) private var router
+    @Environment(TabRouter.self) private var router
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @ScaledMetric(relativeTo: .body) private var gridSpacing: CGFloat = 16
     @ScaledMetric(relativeTo: .body) private var gridPadding: CGFloat = 16

@@ -58,5 +58,5 @@ struct SearchView: View {
     NavigationStack {
         SearchView()
     }
-    .environment(AppRouter())
+    .environment(TabRouter())
 }

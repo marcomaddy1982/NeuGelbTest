@@ -2,11 +2,9 @@ import SwiftUI
 
 struct RegisterView: View {
     @State private var viewModel = RegisterViewModelFactory.make()
-    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         @Bindable var viewModel = viewModel
-        NavigationStack {
         ScrollView {
             VStack(spacing: 24) {
                 VStack(spacing: 8) {
@@ -74,21 +72,9 @@ struct RegisterView: View {
         }
         .navigationTitle("register.navigationTitle")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "xmark")
-                }
-            }
-        }
-        }
     }
 }
 
 #Preview {
-    NavigationStack {
-        RegisterView()
-    }
+    AuthContainer()
 }

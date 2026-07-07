@@ -14,7 +14,6 @@ final class LoginViewModel {
     var email: String = ""
     var password: String = ""
     var loginState: LoginState = .idle
-    var showRegister: Bool = false
 
     private let authService: any AuthServiceProtocol
     private let sessionManager: any SessionManagerProtocol

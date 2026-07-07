@@ -18,8 +18,6 @@ enum ViewState: Equatable {
 @Observable
 final class MovieListViewModel {
     var state: ViewState = .loading
-    var showSettings: Bool = false
-    var showLists: Bool = false
     private(set) var isPaginationLoading: Bool = false
     private(set) var currentPage: Int = 1
     private(set) var hasMorePages: Bool = true

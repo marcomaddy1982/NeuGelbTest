@@ -4,6 +4,7 @@ import Foundation
 final class MockAuthService: AuthServiceProtocol {
     var registerCallCount: Int = 0
     var loginCallCount: Int = 0
+    var logoutCallCount: Int = 0
     var lastRegisterEmail: String?
     var lastLoginEmail: String?
 
@@ -27,6 +28,11 @@ final class MockAuthService: AuthServiceProtocol {
         lastLoginEmail = email
         if shouldThrow { throw MockAuthError.generic }
         return mockAuthTokenResponse
+    }
+
+    func logout(refreshToken: String) async throws {
+        logoutCallCount += 1
+        if shouldThrow { throw MockAuthError.generic }
     }
 }
 

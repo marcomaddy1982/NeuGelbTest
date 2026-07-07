@@ -10,17 +10,19 @@ enum AuthState: Equatable {
 }
 
 @Observable
-@MainActor
 final class AuthViewModel {
     var state: AuthState
 
+    private let authService: any AuthServiceProtocol
     private let sessionManager: any SessionManagerProtocol
     private let modelContainer: ModelContainer
 
     init(
+        authService: any AuthServiceProtocol,
         sessionManager: any SessionManagerProtocol,
         modelContainer: ModelContainer
     ) {
+        self.authService = authService
         self.sessionManager = sessionManager
         self.modelContainer = modelContainer
         self.state = sessionManager.accessToken != nil ? .loggedIn : .loggedOut
@@ -28,8 +30,12 @@ final class AuthViewModel {
 
     func logout() async {
         state = .loading
+        let token = sessionManager.refreshToken
         clearPersistentData()
         try? sessionManager.deleteSession()
+        if let token {
+            try? await authService.logout(refreshToken: token)
+        }
         state = .loggedOut
     }
 

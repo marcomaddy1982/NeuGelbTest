@@ -5,6 +5,7 @@
 //  Created by Marco Maddalena on 23.03.26.
 //
 
+import AppFeatures
 import Foundation
 import Networking
 import SwiftData

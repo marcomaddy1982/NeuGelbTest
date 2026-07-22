@@ -1,4 +1,4 @@
-# iOS Challenge — Technical Overview
+# iOS Kino App
 
 ## Overview
 
